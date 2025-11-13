@@ -1,0 +1,61 @@
+﻿@{
+    ViewBag.Title = "Đăng ký tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Đảm bảo sử dụng layout chính của bạn
+}
+
+<div class="d-flex align-items-center justify-content-center" style="min-height: 90vh; background-color: #f8f9fa;">
+    <div class="col-lg-5 col-md-7 col-sm-9">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header bg-white text-success border-0 pt-4 pb-0 text-center">
+                <h2 class="fw-bold mb-0">Tạo tài khoản mới</h2>
+                <p class="text-muted mt-1">Nhanh chóng và dễ dàng</p>
+            </div>
+            <div class="card-body p-5">
+                @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label text-dark fw-semibold">Tên đăng nhập</label>
+                            <input type="text" name="tenDangNhap" class="form-control rounded-pill" placeholder="Tên đăng nhập" required />
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label text-dark fw-semibold">Mật khẩu</label>
+                            <input type="password" name="matKhau" class="form-control rounded-pill" placeholder="Mật khẩu" required />
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-dark fw-semibold">Họ tên</label>
+                        <input type="text" name="hoTen" class="form-control rounded-pill" placeholder="Họ tên đầy đủ" required />
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-dark fw-semibold">Email</label>
+                        <input type="email" name="email" class="form-control rounded-pill" placeholder="Địa chỉ Email" required />
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-dark fw-semibold">Số điện thoại (Tùy chọn)</label>
+                        <input type="text" name="soDienThoai" class="form-control rounded-pill" placeholder="Số điện thoại" />
+                    </div>
+                    <button type="submit" class="btn btn-success btn-lg w-100 rounded-pill shadow-sm mt-3">Đăng ký</button>
+                }
+                <div class="text-center mt-4">
+                    <p class="mb-0 text-muted">Đã có tài khoản? @Html.ActionLink("Đăng nhập", "Login", "Account", null, new { @class = "text-decoration-none fw-semibold text-success" })</p>
+                </div>
+            </div>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success mt-3 text-center rounded-3 shadow-sm" role="alert">
+                <strong>Thành công!</strong> @TempData["Success"]
+            </div>
+        }
+
+        @if (ViewData.ModelState.Count > 0 && ViewData.ModelState[""] != null && ViewData.ModelState[""].Errors.Count > 0)
+        {
+            <div class="alert alert-danger mt-3 text-center rounded-3 shadow-sm" role="alert">
+                @Html.ValidationSummary(true, "Lỗi đăng ký:")
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,55 @@
+﻿@model DuLich_Tour.Models.ViewModels.RegisterViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Đăng ký</h2>
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        @Html.LabelFor(m => m.ten_dang_nhap)
+        @Html.TextBoxFor(m => m.ten_dang_nhap, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.ten_dang_nhap)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.mat_khau)
+        @Html.PasswordFor(m => m.mat_khau, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.mat_khau)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.nhap_lai_mat_khau)
+        @Html.PasswordFor(m => m.nhap_lai_mat_khau, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.nhap_lai_mat_khau)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ho_ten)
+        @Html.TextBoxFor(m => m.ho_ten, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.ho_ten)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.email)
+        @Html.TextBoxFor(m => m.email, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.email)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.so_dien_thoai)
+        @Html.TextBoxFor(m => m.so_dien_thoai, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.so_dien_thoai)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.dia_chi)
+        @Html.TextBoxFor(m => m.dia_chi, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ngay_sinh)
+        @Html.TextBoxFor(m => m.ngay_sinh, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.gioi_tinh)
+        @Html.DropDownListFor(m => m.gioi_tinh, new SelectList(new[] { "khac", "nam", "nu" }), "Chọn", new { @class = "form-control" })
+    </div>
+    <button type="submit" class="btn btn-primary">Đăng ký</button>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
