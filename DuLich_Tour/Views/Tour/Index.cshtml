@@ -3,161 +3,332 @@
     ViewBag.Title = "Danh Sách Tour Du Lịch";
 }
 
-<div class="container py-5">
-    <!-- Header -->
-    <div class="row mb-5">
-        <div class="col-12 text-center">
-            <h1 class="display-4 fw-bold text-primary mb-3">Danh Sách Tour Du Lịch</h1>
-            <p class="lead text-muted">Khám phá những hành trình tuyệt vời đang chờ đón bạn</p>
-        </div>
-    </div>
+@section Styles {
+    <style>
+        .tour-page-container {
+            padding: 3rem 0;
+            background-color: #f8f9fa;
+        }
 
-    <!-- Filter và Search -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0 rounded-4 p-4">
-                @using (Html.BeginForm("Index", "Tour", FormMethod.Get, new { @class = "row g-3" }))
+        /* Filter Buttons */
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.75rem 2rem;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 50px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-btn:hover {
+            border-color: #007bff;
+            color: #007bff;
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+
+        .filter-btn i {
+            font-size: 1.1rem;
+        }
+
+        /* Tour Cards Grid */
+        .tour-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Tour Card */
+        .tour-card-new {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tour-card-new:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .tour-card-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .tour-card-content {
+            padding: 1.5rem;
+        }
+
+        .tour-card-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tour-card-title h4 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #333;
+            margin: 0;
+        }
+
+        .tour-card-title .plane-icon {
+            color: #007bff;
+            font-size: 1.2rem;
+        }
+
+        .tour-card-location {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .tour-card-location i {
+            color: #007bff;
+        }
+
+        .tour-card-rating {
+            padding: 0.5rem 0;
+        }
+
+        .tour-card-rating .text-warning {
+            font-size: 0.9rem;
+        }
+
+        .tour-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .tour-card-price {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tour-card-price .price-label {
+            font-size: 0.75rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tour-card-price .price-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .btn-book-now {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-book-now:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+            color: white;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @@media (max-width: 992px) {
+            .tour-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .tour-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .filter-buttons {
+                gap: 0.5rem;
+            }
+
+            .filter-btn {
+                padding: 0.6rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+}
+
+<div class="tour-page-container">
+    <div class="container">
+        <!-- Filter Buttons -->
+        <div class="filter-buttons">
+            <a href="@Url.Action("Index", "Tour", new { search = ViewBag.SearchTerm })" 
+               class="filter-btn @(ViewBag.DiaDiemId == null ? "active" : "")">
+                <i class="fas fa-compass"></i>
+                <span>Tất cả</span>
+            </a>
+            @foreach (var diaDiem in (List<DuLich_Tour.Models.DiaDiemDuLich>)ViewBag.DiaDiems)
+            {
+                <a href="@Url.Action("Index", "Tour", new { search = ViewBag.SearchTerm, diaDiemId = diaDiem.IdDiaDiem })" 
+                   class="filter-btn @(ViewBag.DiaDiemId == diaDiem.IdDiaDiem ? "active" : "")">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>@diaDiem.TenDiaDiem</span>
+                </a>
+            }
+        </div>
+
+        <!-- Tour Grid -->
+        @if (Model != null && Model.Count > 0)
+        {
+            <div class="tour-grid" id="tourGrid">
+                @foreach (var tour in Model)
                 {
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold">Tìm kiếm tour</label>
-                        <input type="text" name="search" class="form-control rounded-pill" 
-                               placeholder="Nhập tên tour hoặc mô tả..." 
-                               value="@ViewBag.SearchTerm">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Địa điểm</label>
-                        <select name="diaDiemId" class="form-select rounded-pill">
-                            <option value="">Tất cả địa điểm</option>
-                            @foreach (var diaDiem in (List<DuLich_Tour.Models.DiaDiemDuLich>)ViewBag.DiaDiems)
-                            {
-                                <option value="@diaDiem.IdDiaDiem" 
-                                        @(ViewBag.DiaDiemId != null && ViewBag.DiaDiemId == diaDiem.IdDiaDiem ? "selected" : "")>
-                                    @diaDiem.TenDiaDiem
-                                </option>
+                    <div class="tour-card-new" data-dia-diem-id="@(tour.IdDiaDiem ?? 0)">
+                        <img src="@(string.IsNullOrEmpty(tour.HinhAnh) ? "https://via.placeholder.com/400x300?text=Tour+Image" : tour.HinhAnh)"
+                             class="tour-card-image"
+                             alt="@tour.TenTour">
+                        <div class="tour-card-content">
+                            <div class="tour-card-title">
+                                <i class="fas fa-plane plane-icon"></i>
+                                <h4>@tour.TenTour</h4>
+                            </div>
+                            <div class="tour-card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>@(tour.DiaDiemDuLich?.TenDiaDiem ?? "Chưa xác định")</span>
+                            </div>
+                            
+                            <!-- Đánh giá tour -->
+                            @{
+                                int reviewCount = ViewData[$"ReviewCount_{tour.IdTour}"] != null ? (int)ViewData[$"ReviewCount_{tour.IdTour}"] : 0;
+                                double reviewAvg = ViewData[$"ReviewAvg_{tour.IdTour}"] != null ? (double)ViewData[$"ReviewAvg_{tour.IdTour}"] : 0.0;
                             }
-                        </select>
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary w-100 rounded-pill">
-                            <i class="fas fa-search me-2"></i>Tìm kiếm
-                        </button>
+                            @if (reviewCount > 0)
+                            {
+                                <div class="tour-card-rating mb-2">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="text-warning">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= Math.Round(reviewAvg))
+                                                {
+                                                    <i class="fas fa-star"></i>
+                                                }
+                                                else if (i - 0.5 <= reviewAvg)
+                                                {
+                                                    <i class="fas fa-star-half-alt"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="far fa-star"></i>
+                                                }
+                                            }
+                                        </div>
+                                        <span class="text-muted small">@reviewAvg.ToString("0.0")</span>
+                                        <span class="text-muted small">(@reviewCount đánh giá)</span>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="tour-card-rating mb-2">
+                                    <span class="text-muted small">
+                                        <i class="far fa-star text-warning"></i>
+                                        Chưa có đánh giá
+                                    </span>
+                                </div>
+                            }
+
+                            <div class="tour-card-footer">
+                                <div class="tour-card-price">
+                                    <span class="price-label">Giá / người</span>
+                                    <span class="price-value">@string.Format("{0:N0}₫", tour.GiaNguoiLon)</span>
+                                </div>
+                                @if (Session["TenDangNhap"] != null)
+                                {
+                                    <a href="@Url.Action("Book", "Booking", new { tourId = tour.IdTour })" class="btn-book-now">
+                                        Đặt tour
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Details", "Tour", new { id = tour.IdTour })" class="btn-book-now">
+                                        Xem chi tiết
+                                    </a>
+                                }
+                            </div>
+                        </div>
                     </div>
                 }
             </div>
-        </div>
-    </div>
-
-    <!-- Danh sách Tour -->
-    @if (Model != null && Model.Count > 0)
-    {
-        <div class="row">
-            @foreach (var tour in Model)
-            {
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden tour-card">
-                        <!-- Hình ảnh tour -->
-                        <div class="position-relative">
-                            <img src="@(string.IsNullOrEmpty(tour.HinhAnh) ? "https://via.placeholder.com/400x250?text=Tour+Image" : tour.HinhAnh)" 
-                                 class="card-img-top" 
-                                 alt="@tour.TenTour" 
-                                 style="height: 250px; object-fit: cover;">
-                            @if (tour.KhuyenMai != null)
-                            {
-                                <span class="badge bg-danger position-absolute top-0 end-0 m-3">
-                                    <i class="fas fa-tag me-1"></i>
-                                    @if (tour.KhuyenMai.KieuGiam == "phan_tram")
-                                    {
-                                        <text>Giảm @tour.KhuyenMai.GiaTri%</text>
-                                    }
-                                    else
-                                    {
-                                        <text>Giảm @string.Format("{0:N0}₫", tour.KhuyenMai.GiaTri)</text>
-                                    }
-                                </span>
-                            }
-                            @if (tour.SoChoConLai <= 5 && tour.SoChoConLai > 0)
-                            {
-                                <span class="badge bg-warning position-absolute top-0 start-0 m-3">
-                                    <i class="fas fa-exclamation-triangle me-1"></i>Sắp hết chỗ
-                                </span>
-                            }
-                        </div>
-
-                        <div class="card-body d-flex flex-column">
-                            <!-- Tiêu đề và Địa điểm -->
-                            <h5 class="card-title fw-bold text-primary mb-2">@tour.TenTour</h5>
-                            <p class="card-subtitle mb-3 text-muted">
-                                <i class="fas fa-map-marker-alt me-1 text-danger"></i>
-                                @(tour.DiaDiemDuLich?.TenDiaDiem ?? "Chưa xác định")
-                            </p>
-
-                            <!-- Mô tả -->
-                            <p class="card-text text-muted small mb-3" style="min-height: 60px;">
-                                @(string.IsNullOrEmpty(tour.MoTaNgan) ? "Khám phá hành trình tuyệt vời..." : tour.MoTaNgan)
-                            </p>
-
-                            <!-- Thông tin tour -->
-                            <div class="mb-3">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <small class="text-muted">
-                                        <i class="fas fa-calendar-alt me-1"></i>
-                                        @if (tour.NgayBatDau.HasValue)
-                                        {
-                                            <text>@tour.NgayBatDau.Value.ToString("dd/MM/yyyy")</text>
-                                        }
-                                    </small>
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock me-1"></i>
-                                        @if (tour.NgayBatDau.HasValue && tour.NgayKetThuc.HasValue)
-                                        {
-                                            var days = (tour.NgayKetThuc.Value - tour.NgayBatDau.Value).Days;
-                                            <text>@days ngày @(days - 1) đêm</text>
-                                        }
-                                    </small>
-                                </div>
-                            </div>
-
-                            <div class="mt-auto pt-3 border-top">
-                                <!-- Giá -->
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <div>
-                                        <span class="text-success fw-bold fs-4">
-                                            @string.Format("{0:N0}₫", tour.GiaNguoiLon)
-                                        </span>
-                                        <small class="text-muted d-block">Người lớn</small>
-                                    </div>
-                                    <span class="badge bg-info text-dark fs-6 px-3 py-2">
-                                        <i class="fas fa-users me-1"></i>
-                                        Còn: @tour.SoChoConLai/@tour.SoCho chỗ
-                                    </span>
-                                </div>
-
-                                <!-- Nút chi tiết -->
-                                <a href="@Url.Action("Details", "Tour", new { id = tour.IdTour })" 
-                                   class="btn btn-primary w-100 rounded-pill">
-                                    <i class="fas fa-info-circle me-2"></i>Xem chi tiết
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="row">
-            <div class="col-12">
-                <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
-                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                    <h4 class="text-muted">Không tìm thấy tour nào</h4>
-                    <p class="text-muted">Vui lòng thử lại với từ khóa hoặc bộ lọc khác</p>
-                    <a href="@Url.Action("Index", "Tour")" class="btn btn-primary rounded-pill mt-3">
-                        <i class="fas fa-redo me-2"></i>Xem tất cả tour
-                    </a>
-                </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="fas fa-search"></i>
+                <h3>Không tìm thấy tour nào</h3>
+                <p class="text-muted">Vui lòng thử lại với bộ lọc khác</p>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Filter functionality với JavaScript (optional, có thể dùng link trực tiếp)
+            $('.filter-btn').on('click', function(e) {
+                // Link sẽ tự động chuyển hướng, không cần preventDefault
+            });
+        });
+    </script>
+}
 

@@ -1,160 +1,518 @@
 @model DuLich_Tour.Models.TourDuLich
+@using DuLich_Tour.Models
 @{
     ViewBag.Title = Model.TenTour;
+    var relatedTours = ViewBag.RelatedTours as List<TourDuLich> ?? new List<TourDuLich>();
 }
 
-<div class="container py-5">
-    <div class="row">
-        <!-- Hình ảnh tour -->
-        <div class="col-lg-8 mb-4">
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-                <img src="@(string.IsNullOrEmpty(Model.HinhAnh) ? "https://via.placeholder.com/800x500?text=Tour+Image" : Model.HinhAnh)" 
-                     class="card-img-top" 
-                     alt="@Model.TenTour" 
-                     style="height: 500px; object-fit: cover;">
+@section Styles {
+    <style>
+        /* Sticky Booking Bar */
+        .booking-bar {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .booking-bar-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .booking-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .booking-info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .booking-info-item i {
+            font-size: 1.1rem;
+        }
+
+        .booking-price {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .booking-price-text {
+            text-align: right;
+        }
+
+        .booking-price-text .price-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .booking-price-text .price-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .booking-btn {
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* Hero Section */
+        .tour-hero {
+            position: relative;
+            height: 500px;
+            overflow: hidden;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+        }
+
+        .tour-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .tour-hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            padding: 2rem;
+            color: white;
+        }
+
+        .tour-hero-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title i {
+            color: #007bff;
+            font-size: 1.3rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .info-card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .info-card-content h6 {
+            margin: 0;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .info-card-content p {
+            margin: 0.25rem 0 0 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Related Tours */
+        .related-tours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .related-tour-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .related-tour-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .related-tour-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .related-tour-content {
+            padding: 1.5rem;
+        }
+
+        .related-tour-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .related-tour-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #007bff;
+            margin-top: 1rem;
+        }
+
+        @@media (max-width: 768px) {
+            .booking-bar-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .booking-info {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .booking-price {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .booking-price-text {
+                text-align: left;
+            }
+
+            .tour-hero-title {
+                font-size: 1.8rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+}
+
+<!-- Sticky Booking Bar -->
+<div class="booking-bar">
+    <div class="container">
+        <div class="booking-bar-content">
+            <div class="booking-info">
+                <div class="booking-info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>@(Model.DiaDiemDuLich?.TenDiaDiem ?? "Chưa xác định")</span>
+                </div>
+                @if (Model.NgayBatDau.HasValue && Model.NgayKetThuc.HasValue)
+                {
+                    var days = (Model.NgayKetThuc.Value - Model.NgayBatDau.Value).Days;
+                    <div class="booking-info-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>@Model.NgayBatDau.Value.ToString("dd/MM/yyyy") - @Model.NgayKetThuc.Value.ToString("dd/MM/yyyy") (@days ngày @(days - 1) đêm)</span>
+                    </div>
+                }
+                <div class="booking-info-item">
+                    <i class="fas fa-users"></i>
+                    <span>Còn @Model.SoChoConLai/@Model.SoCho chỗ</span>
+                </div>
             </div>
-        </div>
-
-        <!-- Thông tin đặt tour -->
-        <div class="col-lg-4 mb-4">
-            <div class="card border-0 shadow-lg rounded-4 sticky-top" style="top: 100px;">
-                <div class="card-body p-4">
-                    <h3 class="fw-bold text-primary mb-4">@Model.TenTour</h3>
-
-                    <!-- Địa điểm -->
-                    <div class="mb-3">
-                        <i class="fas fa-map-marker-alt text-danger me-2"></i>
-                        <strong>Địa điểm:</strong>
-                        <span class="text-muted">@(Model.DiaDiemDuLich?.TenDiaDiem ?? "Chưa xác định")</span>
-                    </div>
-
-                    <!-- Thời gian -->
-                    @if (Model.NgayBatDau.HasValue && Model.NgayKetThuc.HasValue)
+            <div class="booking-price">
+                <div class="booking-price-text">
+                    <div class="price-label">Từ</div>
+                    <div class="price-value">@string.Format("{0:N0}₫", Model.GiaNguoiLon)</div>
+                </div>
+                @if (Model.SoChoConLai > 0)
+                {
+                    if (Session["TenDangNhap"] != null)
                     {
-                        var days = (Model.NgayKetThuc.Value - Model.NgayBatDau.Value).Days;
-                        <div class="mb-3">
-                            <i class="fas fa-calendar-alt text-primary me-2"></i>
-                            <strong>Thời gian:</strong>
-                            <span class="text-muted">
-                                @Model.NgayBatDau.Value.ToString("dd/MM/yyyy") - @Model.NgayKetThuc.Value.ToString("dd/MM/yyyy")
-                                (@days ngày @(days - 1) đêm)
-                            </span>
-                        </div>
-                    }
-
-                    <!-- Số chỗ -->
-                    <div class="mb-3">
-                        <i class="fas fa-users text-info me-2"></i>
-                        <strong>Số chỗ:</strong>
-                        <span class="text-muted">Còn @Model.SoChoConLai/@Model.SoCho chỗ</span>
-                    </div>
-
-                    <!-- Khuyến mãi -->
-                    @if (Model.KhuyenMai != null)
-                    {
-                        <div class="alert alert-success rounded-3 mb-4">
-                            <i class="fas fa-gift me-2"></i>
-                            <strong>@Model.KhuyenMai.TenChuongTrinh</strong>
-                            <br>
-                            <small>
-                                @if (Model.KhuyenMai.KieuGiam == "phan_tram")
-                                {
-                                    <text>Giảm @Model.KhuyenMai.GiaTri%</text>
-                                }
-                                else
-                                {
-                                    <text>Giảm @string.Format("{0:N0}₫", Model.KhuyenMai.GiaTri)</text>
-                                }
-                            </small>
-                        </div>
-                    }
-
-                    <!-- Giá -->
-                    <div class="mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-muted">Người lớn:</span>
-                            <span class="text-success fw-bold fs-4">
-                                @string.Format("{0:N0}₫", Model.GiaNguoiLon)
-                            </span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted">Trẻ em:</span>
-                            <span class="text-success fw-bold">
-                                @string.Format("{0:N0}₫", Model.GiaTreEm)
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Nút đặt tour -->
-                    @if (Model.SoChoConLai > 0)
-                    {
-                        <button class="btn btn-primary w-100 rounded-pill py-3 fw-bold fs-5 mb-3">
+                        <a href="@Url.Action("Book", "Booking", new { tourId = Model.IdTour })" class="btn btn-light booking-btn">
                             <i class="fas fa-shopping-cart me-2"></i>Đặt tour ngay
-                        </button>
+                        </a>
                     }
                     else
                     {
-                        <button class="btn btn-secondary w-100 rounded-pill py-3 fw-bold fs-5 mb-3" disabled>
-                            <i class="fas fa-times-circle me-2"></i>Hết chỗ
-                        </button>
+                        <a href="@Url.Action("Login", "Account")" class="btn btn-light booking-btn">
+                            <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập để đặt tour
+                        </a>
                     }
-
-                    <a href="@Url.Action("Index", "Tour")" class="btn btn-outline-secondary w-100 rounded-pill">
-                        <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Chi tiết tour -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card border-0 shadow-lg rounded-4">
-                <div class="card-body p-5">
-                    <h4 class="fw-bold mb-4">
-                        <i class="fas fa-info-circle text-primary me-2"></i>Thông tin tour
-                    </h4>
-
-                    <!-- Mô tả ngắn -->
-                    @if (!string.IsNullOrEmpty(Model.MoTaNgan))
-                    {
-                        <div class="mb-4">
-                            <h5 class="fw-semibold mb-3">Mô tả</h5>
-                            <p class="text-muted" style="line-height: 1.8;">
-                                @Model.MoTaNgan
-                            </p>
-                        </div>
-                    }
-
-                    <!-- Lịch trình -->
-                    @if (!string.IsNullOrEmpty(Model.LichTrinh))
-                    {
-                        <div class="mb-4">
-                            <h5 class="fw-semibold mb-3">
-                                <i class="fas fa-route text-success me-2"></i>Lịch trình
-                            </h5>
-                            <div class="text-muted" style="line-height: 1.8; white-space: pre-line;">
-                                @Model.LichTrinh
-                            </div>
-                        </div>
-                    }
-
-                    <!-- Thông tin địa điểm -->
-                    @if (Model.DiaDiemDuLich != null && !string.IsNullOrEmpty(Model.DiaDiemDuLich.MoTa))
-                    {
-                        <div class="mb-4">
-                            <h5 class="fw-semibold mb-3">
-                                <i class="fas fa-map-marked-alt text-danger me-2"></i>Về @Model.DiaDiemDuLich.TenDiaDiem
-                            </h5>
-                            <p class="text-muted" style="line-height: 1.8;">
-                                @Model.DiaDiemDuLich.MoTa
-                            </p>
-                        </div>
-                    }
-                </div>
+                }
+                else
+                {
+                    <button class="btn btn-secondary booking-btn" disabled>
+                        <i class="fas fa-times-circle me-2"></i>Hết chỗ
+                    </button>
+                }
             </div>
         </div>
     </div>
 </div>
 
+<div class="container py-4">
+    <!-- Hero Image -->
+    <div class="tour-hero">
+        <img src="@(string.IsNullOrEmpty(Model.HinhAnh) ? "https://via.placeholder.com/1200x500?text=Tour+Image" : Model.HinhAnh)" 
+             alt="@Model.TenTour">
+        <div class="tour-hero-overlay">
+            <h1 class="tour-hero-title">@Model.TenTour</h1>
+            @if (Model.KhuyenMai != null)
+            {
+                <div class="d-inline-block bg-success px-3 py-1 rounded-pill">
+                    <i class="fas fa-gift me-2"></i>
+                    <strong>@Model.KhuyenMai.TenChuongTrinh</strong>
+                    @if (Model.KhuyenMai.KieuGiam == "phan_tram")
+                    {
+                        <text> - Giảm @Model.KhuyenMai.GiaTri%</text>
+                    }
+                    else
+                    {
+                        <text> - Giảm @string.Format("{0:N0}₫", Model.KhuyenMai.GiaTri)</text>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Thông tin nhanh -->
+    <div class="content-section">
+        <h3 class="section-title">
+            <i class="fas fa-info-circle"></i>
+            Thông tin nhanh
+        </h3>
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-card-icon bg-danger text-white">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="info-card-content">
+                    <h6>Địa điểm</h6>
+                    <p>@(Model.DiaDiemDuLich?.TenDiaDiem ?? "Chưa xác định")</p>
+                </div>
+            </div>
+            @if (Model.NgayBatDau.HasValue && Model.NgayKetThuc.HasValue)
+            {
+                var days = (Model.NgayKetThuc.Value - Model.NgayBatDau.Value).Days;
+                <div class="info-card">
+                    <div class="info-card-icon bg-primary text-white">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="info-card-content">
+                        <h6>Thời gian</h6>
+                        <p>@Model.NgayBatDau.Value.ToString("dd/MM/yyyy") - @Model.NgayKetThuc.Value.ToString("dd/MM/yyyy")<br><small>@days ngày @(days - 1) đêm</small></p>
+                    </div>
+                </div>
+            }
+            <div class="info-card">
+                <div class="info-card-icon bg-info text-white">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="info-card-content">
+                    <h6>Số chỗ</h6>
+                    <p>Còn @Model.SoChoConLai/@Model.SoCho chỗ</p>
+                </div>
+            </div>
+            <div class="info-card">
+                <div class="info-card-icon bg-success text-white">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="info-card-content">
+                    <h6>Giá người lớn</h6>
+                    <p class="text-success fw-bold">@string.Format("{0:N0}₫", Model.GiaNguoiLon)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mô tả tour -->
+    @if (!string.IsNullOrEmpty(Model.MoTaNgan))
+    {
+        <div class="content-section">
+            <h3 class="section-title">
+                <i class="fas fa-file-alt"></i>
+                Mô tả tour
+            </h3>
+            <p class="text-muted" style="line-height: 1.8; font-size: 1.05rem;">
+                @Model.MoTaNgan
+            </p>
+        </div>
+    }
+
+    <!-- Lịch trình -->
+    @if (!string.IsNullOrEmpty(Model.LichTrinh))
+    {
+        <div class="content-section">
+            <h3 class="section-title">
+                <i class="fas fa-route"></i>
+                Lịch trình chi tiết
+            </h3>
+            <div class="text-muted" style="line-height: 1.8; white-space: pre-line; font-size: 1.05rem;">
+                @Model.LichTrinh
+            </div>
+        </div>
+    }
+
+    <!-- Thông tin địa điểm -->
+    @if (Model.DiaDiemDuLich != null && !string.IsNullOrEmpty(Model.DiaDiemDuLich.MoTa))
+    {
+        <div class="content-section">
+            <h3 class="section-title">
+                <i class="fas fa-map-marked-alt"></i>
+                Về @Model.DiaDiemDuLich.TenDiaDiem
+            </h3>
+            <p class="text-muted" style="line-height: 1.8; font-size: 1.05rem;">
+                @Model.DiaDiemDuLich.MoTa
+            </p>
+        </div>
+    }
+
+    <!-- Đánh giá tour -->
+    @{
+        var danhGias = ViewBag.DanhGias as List<DanhGiaTour>;
+        bool hasBooked = ViewBag.HasBooked != null ? (bool)ViewBag.HasBooked : false;
+        bool hasReviewed = ViewBag.HasReviewed != null ? (bool)ViewBag.HasReviewed : false;
+    }
+
+    @if (danhGias != null && danhGias.Count > 0)
+    {
+        <div class="content-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="section-title mb-0">
+                    <i class="fas fa-star"></i>
+                    Đánh giá (@danhGias.Count)
+                </h3>
+                @if (Session["TenDangNhap"] != null && hasBooked && !hasReviewed)
+                {
+                    <a href="@Url.Action("Create", "Review", new { tourId = Model.IdTour })" class="btn btn-primary rounded-pill">
+                        <i class="fas fa-plus me-2"></i>Viết đánh giá
+                    </a>
+                }
+            </div>
+            <div class="reviews-list">
+                @foreach (var danhGia in danhGias)
+                {
+                    <div class="review-item mb-4 p-4 bg-light rounded-3">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h6 class="fw-bold mb-1">
+                                    @(danhGia.KhachHang?.HoTen ?? "Khách hàng")
+                                </h6>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    @danhGia.NgayDanhGia.ToString("dd/MM/yyyy")
+                                </small>
+                            </div>
+                            <div class="text-warning">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= danhGia.DiemDanhGia)
+                                    {
+                                        <i class="fas fa-star"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="far fa-star"></i>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(danhGia.NoiDung))
+                        {
+                            <p class="text-muted mb-0" style="line-height: 1.8;">
+                                @danhGia.NoiDung
+                            </p>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else if (Session["TenDangNhap"] != null && hasBooked && !hasReviewed)
+    {
+        <div class="content-section text-center py-5">
+            <i class="fas fa-star fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted mb-3">Chưa có đánh giá nào</h5>
+            <a href="@Url.Action("Create", "Review", new { tourId = Model.IdTour })" class="btn btn-primary rounded-pill">
+                <i class="fas fa-plus me-2"></i>Viết đánh giá đầu tiên
+            </a>
+        </div>
+    }
+
+    <!-- Tour tương tự -->
+    @if (relatedTours != null && relatedTours.Count > 0)
+    {
+        <div class="content-section">
+            <h3 class="section-title">
+                <i class="fas fa-th-large"></i>
+                Tour tương tự
+            </h3>
+            <div class="related-tours-grid">
+                @foreach (var relatedTour in relatedTours)
+                {
+                    <a href="@Url.Action("Details", "Tour", new { id = relatedTour.IdTour })" class="text-decoration-none">
+                        <div class="related-tour-card">
+                            <img src="@(string.IsNullOrEmpty(relatedTour.HinhAnh) ? "https://via.placeholder.com/400x300?text=Tour+Image" : relatedTour.HinhAnh)" 
+                                 class="related-tour-image" 
+                                 alt="@relatedTour.TenTour">
+                            <div class="related-tour-content">
+                                <h5 class="related-tour-title">@relatedTour.TenTour</h5>
+                                <p class="text-muted small mb-0">
+                                    <i class="fas fa-map-marker-alt text-primary me-1"></i>
+                                    @(relatedTour.DiaDiemDuLich?.TenDiaDiem ?? "Chưa xác định")
+                                </p>
+                                <div class="related-tour-price">
+                                    @string.Format("{0:N0}₫", relatedTour.GiaNguoiLon)
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    }
+</div>

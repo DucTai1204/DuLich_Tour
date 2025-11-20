@@ -1,0 +1,292 @@
+@model DuLich_Tour.Models.ViewModels.ProfileViewModel
+@{
+    ViewBag.Title = "Hồ Sơ Cá Nhân";
+}
+
+@section Styles {
+    <style>
+        .profile-container {
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding: 3rem 0;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: none;
+        }
+
+        .profile-header {
+            background: #007bff;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 3rem;
+            color: #007bff;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-body {
+            padding: 2.5rem;
+        }
+
+        .form-group-custom {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label-custom {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.75rem;
+            display: block;
+            font-size: 0.95rem;
+        }
+
+        .form-control-custom {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control-custom:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
+            outline: none;
+        }
+
+        .input-group-icon {
+            position: relative;
+        }
+
+        .input-group-icon i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #007bff;
+            z-index: 10;
+        }
+
+        .input-group-icon input,
+        .input-group-icon select {
+            padding-left: 3rem;
+        }
+
+        .btn-custom {
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary-custom {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        .btn-outline-custom {
+            border: 2px solid #007bff;
+            color: #007bff;
+            background: white;
+        }
+
+        .btn-outline-custom:hover {
+            background: #007bff;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title i {
+            color: #007bff;
+            font-size: 1.3rem;
+        }
+    </style>
+}
+
+<div class="profile-container">
+    <div class="container">
+        <h2 class="section-title">
+            <i class="fas fa-user-circle"></i>
+            Hồ Sơ Cá Nhân
+        </h2>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm">
+                <i class="fas fa-check-circle me-2"></i>
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h4 class="mb-0">@Model.HoTen</h4>
+                        <p class="mb-0 opacity-75">@Model.Email</p>
+                    </div>
+
+                    <div class="profile-body">
+                        @using (Html.BeginForm("Profile", "Account", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(m => m.IdKhachHang)
+
+                            if (!ViewData.ModelState.IsValid)
+                            {
+                                <text>
+                                <div class="alert alert-danger rounded-3">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger mb-0" })
+                                </div>
+                                </text>
+                            }
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group-custom">
+                                        <label class="form-label-custom">
+                                            <i class="fas fa-user me-2 text-primary"></i>Họ tên <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="input-group-icon">
+                                            <i class="fas fa-user"></i>
+                                            @Html.TextBoxFor(m => m.HoTen, new { @class = "form-control form-control-custom" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.HoTen, "", new { @class = "text-danger small" })
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group-custom">
+                                        <label class="form-label-custom">
+                                            <i class="fas fa-envelope me-2 text-primary"></i>Email <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="input-group-icon">
+                                            <i class="fas fa-envelope"></i>
+                                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control form-control-custom", @type = "email" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group-custom">
+                                        <label class="form-label-custom">
+                                            <i class="fas fa-phone me-2 text-primary"></i>Số điện thoại
+                                        </label>
+                                        <div class="input-group-icon">
+                                            <i class="fas fa-phone"></i>
+                                            @Html.TextBoxFor(m => m.SoDienThoai, new { @class = "form-control form-control-custom" })
+                                        </div>
+                                        @Html.ValidationMessageFor(m => m.SoDienThoai, "", new { @class = "text-danger small" })
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group-custom">
+                                        <label class="form-label-custom">
+                                            <i class="fas fa-venus-mars me-2 text-primary"></i>Giới tính
+                                        </label>
+                                        <div class="input-group-icon">
+                                            <i class="fas fa-venus-mars"></i>
+                                            @Html.DropDownListFor(m => m.GioiTinh,
+                                                new SelectList(new[] {
+                                                    new SelectListItem { Text = "Nam", Value = "nam" },
+                                                    new SelectListItem { Text = "Nữ", Value = "nu" },
+                                                    new SelectListItem { Text = "Khác", Value = "khac" }
+                                                }, "Value", "Text"),
+                                                new { @class = "form-select form-control-custom" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-map-marker-alt me-2 text-primary"></i>Địa chỉ
+                                </label>
+                                <div class="input-group-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    @Html.TextBoxFor(m => m.DiaChi, new { @class = "form-control form-control-custom" })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.DiaChi, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-birthday-cake me-2 text-primary"></i>Ngày sinh
+                                </label>
+                                <div class="input-group-icon">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    @Html.TextBoxFor(m => m.NgaySinh, new { @class = "form-control form-control-custom", @type = "date" })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.NgaySinh, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-flex gap-3 justify-content-end">
+                                <a href="@Url.Action("ChangePassword", "Account")" class="btn btn-outline-custom btn-custom">
+                                    <i class="fas fa-key me-2"></i>Đổi mật khẩu
+                                </a>
+                                <button type="submit" class="btn btn-primary-custom btn-custom">
+                                    <i class="fas fa-save me-2"></i>Lưu thay đổi
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

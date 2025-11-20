@@ -1,0 +1,125 @@
+@model DuLich_Tour.Models.ViewModels.BookTourViewModel
+@{
+    ViewBag.Title = "Đặt Tour";
+    var tour = ViewBag.Tour as DuLich_Tour.Models.TourDuLich;
+}
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-header bg-primary text-white rounded-top-4">
+                    <h4 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>Đặt Tour: @tour.TenTour</h4>
+                </div>
+                <div class="card-body p-4">
+                    @using (Html.BeginForm("Book", "Booking", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.TourId)
+
+                        if (!ViewData.ModelState.IsValid)
+                        {
+                            <text>
+                            <div class="alert alert-danger">
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            </div>
+                            </text>
+                        }
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Số người lớn</label>
+                                @Html.TextBoxFor(m => m.SoNguoiLon, new { @class = "form-control", @type = "number", @min = "1", @max = "50" })
+                                @Html.ValidationMessageFor(m => m.SoNguoiLon, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Số trẻ em</label>
+                                @Html.TextBoxFor(m => m.SoTreEm, new { @class = "form-control", @type = "number", @min = "0", @max = "50" })
+                                @Html.ValidationMessageFor(m => m.SoTreEm, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Phương thức thanh toán</label>
+                            @Html.DropDownListFor(m => m.PhuongThucThanhToan, 
+                                new SelectList(new[] {
+                                    new SelectListItem { Text = "Thanh toán online", Value = "online" },
+                                    new SelectListItem { Text = "Thanh toán tại văn phòng", Value = "tai-van-phong" }
+                                }, "Value", "Text"), 
+                                new { @class = "form-select" })
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Ghi chú (Tùy chọn)</label>
+                            @Html.TextAreaFor(m => m.GhiChu, new { @class = "form-control", @rows = "4", @placeholder = "Nhập ghi chú nếu có..." })
+                        </div>
+
+                        <div class="d-flex gap-3">
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="fas fa-check me-2"></i>Xác nhận đặt tour
+                            </button>
+                            <a href="@Url.Action("Details", "Tour", new { id = Model.TourId })" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-arrow-left me-2"></i>Quay lại
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-lg rounded-4 sticky-top" style="top: 100px;">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">Thông tin tour</h5>
+                    
+                    @if (tour.DiaDiemDuLich != null)
+                    {
+                        <div class="mb-3">
+                            <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                            <strong>Địa điểm:</strong> @tour.DiaDiemDuLich.TenDiaDiem
+                        </div>
+                    }
+
+                    @if (tour.NgayBatDau.HasValue && tour.NgayKetThuc.HasValue)
+                    {
+                        var days = (tour.NgayKetThuc.Value - tour.NgayBatDau.Value).Days;
+                        <div class="mb-3">
+                            <i class="fas fa-calendar-alt text-primary me-2"></i>
+                            <strong>Thời gian:</strong> @tour.NgayBatDau.Value.ToString("dd/MM/yyyy") - @tour.NgayKetThuc.Value.ToString("dd/MM/yyyy")<br>
+                            <small class="text-muted">(@days ngày @(days - 1) đêm)</small>
+                        </div>
+                    }
+
+                    <div class="mb-3">
+                        <i class="fas fa-users text-info me-2"></i>
+                        <strong>Số chỗ còn lại:</strong> @tour.SoChoConLai/@tour.SoCho
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-3">
+                        <strong>Giá người lớn:</strong>
+                        <span class="text-success fw-bold fs-5 float-end">@string.Format("{0:N0}₫", tour.GiaNguoiLon)</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Giá trẻ em:</strong>
+                        <span class="text-success fw-bold float-end">@string.Format("{0:N0}₫", tour.GiaTreEm)</span>
+                    </div>
+
+                    @if (tour.KhuyenMai != null)
+                    {
+                        <div class="alert alert-success">
+                            <i class="fas fa-gift me-2"></i>
+                            <strong>@tour.KhuyenMai.TenChuongTrinh</strong>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

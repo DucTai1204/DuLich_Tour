@@ -1,0 +1,181 @@
+@model DuLich_Tour.Models.ViewModels.BookingDetailsViewModel
+@{
+    ViewBag.Title = "Chi Tiết Đặt Tour";
+}
+
+<div class="container py-5">
+    <h2 class="mb-4"><i class="fas fa-info-circle me-2"></i>Chi Tiết Đặt Tour</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Thông tin tour</h5>
+                </div>
+                <div class="card-body">
+                    <h4>@(Model.TourDuLich?.TenTour ?? "Tour không tồn tại")</h4>
+                    @if (Model.TourDuLich != null)
+                    {
+                        <p class="text-muted mb-3">
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            @(Model.TourDuLich.DiaDiemDuLich?.TenDiaDiem ?? "Chưa xác định")
+                        </p>
+                        @if (Model.TourDuLich.NgayBatDau.HasValue && Model.TourDuLich.NgayKetThuc.HasValue)
+                        {
+                            var days = (Model.TourDuLich.NgayKetThuc.Value - Model.TourDuLich.NgayBatDau.Value).Days;
+                            <p class="mb-3">
+                                <i class="fas fa-calendar-alt me-2"></i>
+                                @Model.TourDuLich.NgayBatDau.Value.ToString("dd/MM/yyyy") - @Model.TourDuLich.NgayKetThuc.Value.ToString("dd/MM/yyyy")
+                                (@days ngày @(days - 1) đêm)
+                            </p>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Thông tin đặt tour</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Mã đặt tour:</strong> #@Model.DatTour.IdDatTour
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Ngày đặt:</strong> @Model.DatTour.NgayDat.ToString("dd/MM/yyyy HH:mm")
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Số người lớn:</strong> @Model.DatTour.SoNguoiLon
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Số trẻ em:</strong> @Model.DatTour.SoTreEm
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Trạng thái:</strong>
+                            <span class="badge 
+                                @(Model.DatTour.TrangThai == "da-xac-nhan" ? "bg-success" : 
+                                  Model.DatTour.TrangThai == "da-huy" ? "bg-danger" : 
+                                  Model.DatTour.TrangThai == "da-thanh-toan" ? "bg-primary" : "bg-warning")">
+                                @(Model.DatTour.TrangThai == "da-xac-nhan" ? "Đã xác nhận" : 
+                                  Model.DatTour.TrangThai == "da-huy" ? "Đã hủy" : 
+                                  Model.DatTour.TrangThai == "da-thanh-toan" ? "Đã thanh toán" : "Chờ xác nhận")
+                            </span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Phương thức thanh toán:</strong> @Model.DatTour.PhuongThucThanhToan
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.DatTour.GhiChu))
+                    {
+                        <div class="mb-3">
+                            <strong>Ghi chú:</strong>
+                            <p class="text-muted">@Model.DatTour.GhiChu</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @if (Model.ThanhToans != null && Model.ThanhToans.Count > 0)
+            {
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Lịch sử thanh toán</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Ngày thanh toán</th>
+                                    <th>Số tiền</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var payment in Model.ThanhToans)
+                                {
+                                    <tr>
+                                        <td>@payment.NgayThanhToan.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>@string.Format("{0:N0}₫", payment.SoTien)</td>
+                                        <td>
+                                            <span class="badge @(payment.TrangThai == "da-xac-nhan" ? "bg-success" : "bg-warning")">
+                                                @(payment.TrangThai == "da-xac-nhan" ? "Đã xác nhận" : "Chờ xác nhận")
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm sticky-top" style="top: 100px;">
+                <div class="card-body">
+                    <h5 class="mb-4">Tổng tiền</h5>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Người lớn (@Model.DatTour.SoNguoiLon):</span>
+                            <span>@string.Format("{0:N0}₫", Model.DatTour.SoNguoiLon * (Model.TourDuLich?.GiaNguoiLon ?? 0))</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Trẻ em (@Model.DatTour.SoTreEm):</span>
+                            <span>@string.Format("{0:N0}₫", Model.DatTour.SoTreEm * (Model.TourDuLich?.GiaTreEm ?? 0))</span>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-4">
+                        <strong>Tổng cộng:</strong>
+                        <strong class="text-success fs-4">@string.Format("{0:N0}₫", Model.DatTour.TongTien)</strong>
+                    </div>
+
+                    @if (Model.CanCancel)
+                    {
+                        using (Html.BeginForm("Cancel", "Booking", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.Hidden("id", Model.DatTour.IdDatTour)
+                            <button type="submit" class="btn btn-danger w-100 mb-2" onclick="return confirm('Bạn có chắc chắn muốn hủy đặt tour này?');">
+                                <i class="fas fa-times-circle me-2"></i>Hủy đặt tour
+                            </button>
+                        }
+                    }
+
+                    @if (Model.DatTour.TrangThai != "da-thanh-toan" && Model.DatTour.TrangThai != "da-huy")
+                    {
+                        <a href="@Url.Action("Pay", "Payment", new { bookingId = Model.DatTour.IdDatTour })" class="btn btn-primary w-100">
+                            <i class="fas fa-credit-card me-2"></i>Thanh toán
+                        </a>
+                    }
+
+                    <a href="@Url.Action("MyBookings", "Booking")" class="btn btn-outline-secondary w-100 mt-2">
+                        <i class="fas fa-arrow-left me-2"></i>Quay lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -55,7 +55,7 @@
             position: relative;
             width: 100vw;
             min-height: 100vh;
-            background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-image: url('/Images/anhbien.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -70,7 +70,7 @@
             padding-bottom: 0;
         }
         body {
-            background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-image: url('/Images/anhbien.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -92,15 +92,246 @@
             min-height: 100vh;
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding-top: 8rem; /* Cách xa header */
+            padding-top: 8rem;
+            padding-bottom: 2rem;
         }
 
-        .hero-content {
-            text-align: center;
+        /* Layout 2 cột */
+        .hero-split-container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        /* Bên trái - Text về du lịch */
+        .hero-text-section {
+            flex: 1;
             color: #fff;
             padding: 2rem;
-            max-width: 800px;
+        }
+
+        .hero-text-section h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-text-section p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+        }
+
+        .hero-quote {
+            font-size: 1.5rem;
+            font-style: italic;
+            opacity: 0.9;
+            border-left: 4px solid rgba(255, 255, 255, 0.5);
+            padding-left: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        /* Bên phải - Form Login/Register */
+        .form-section {
+            flex: 0 0 450px;
+        }
+
+        .login-form-container,
+        .register-form-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            padding: 2.5rem;
+            box-sizing: border-box;
+        }
+
+        /* Đảm bảo các input và button cùng width */
+        .login-form-container .mb-3,
+        .register-form-container .mb-3,
+        .login-form-container .mb-4,
+        .register-form-container .mb-4 {
+            width: 100%;
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .register-form-container {
+            display: none;
+        }
+
+        .form-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-tab {
+            flex: 1;
+            padding: 0.75rem;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .form-tab.active {
+            color: #fff;
+            border-bottom-color: #fff;
+        }
+
+        .form-tab:hover {
+            color: #fff;
+        }
+
+        .login-form-container h3,
+        .register-form-container h3 {
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .login-form-container .form-label,
+        .register-form-container .form-label {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-form-container .form-control,
+        .register-form-container .form-control {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            color: #333;
+            transition: all 0.3s ease;
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box;
+        }
+
+        .login-form-container .form-control:focus,
+        .register-form-container .form-control:focus {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+            outline: none;
+            color: #333;
+        }
+
+        .login-form-container .form-control::placeholder,
+        .register-form-container .form-control::placeholder {
+            color: #999;
+        }
+
+        .input-icon-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .input-icon-wrapper i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+            z-index: 2;
+        }
+
+        .input-icon-wrapper .form-control {
+            padding-left: 3rem;
+            width: 100% !important;
+        }
+
+        /* Đảm bảo tất cả input đều full width */
+
+        .login-form-container .btn-login-submit,
+        .register-form-container .btn-register-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .register-form-container .btn-register-submit {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
+        }
+
+        .login-form-container .btn-login-submit:hover,
+        .register-form-container .btn-register-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            color: white;
+        }
+
+        .register-form-container .btn-register-submit:hover {
+            box-shadow: 0 6px 20px rgba(17, 153, 142, 0.6);
+            background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);
+        }
+
+        .login-form-container .text-muted,
+        .register-form-container .text-muted {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        .login-form-container .register-link,
+        .register-form-container .login-link {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .login-form-container .register-link:hover,
+        .register-form-container .login-link:hover {
+            color: #f0f0f0;
+            text-decoration: underline;
+        }
+
+        .login-form-container .forgot-password {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .login-form-container .forgot-password:hover {
+            color: #fff;
+        }
+
+        .login-form-container .alert,
+        .register-form-container .alert {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
         }
 
         .hero-description {
@@ -181,22 +412,159 @@
             margin-top: 0 !important;
         }
 
-        /* Responsive cho mobile */
-        @*@media (max-width: 768px) {
-            .hero-content {
+        @*/* Responsive cho mobile */
+        @media (max-width: 992px) {
+            .hero-split-container {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .hero-text-section {
+                text-align: center;
+            }
+
+            .hero-text-section h1 {
+                font-size: 2.5rem;
+            }
+
+            .form-section {
+                flex: 1;
+                width: 100%;
+                max-width: 450px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content-wrapper {
                 padding-top: 6rem;
             }
 
-            .hero-description {
+            .hero-text-section h1 {
+                font-size: 2rem;
+            }
+
+            .hero-text-section p {
                 font-size: 1rem;
             }
 
-            .hero-btn {
-                padding: 0.8rem 2rem;
-                font-size: 0.9rem;
+            .login-form-container,
+            .register-form-container {
+                padding: 1.5rem;
+            }
+
+            .login-form-container h3,
+            .register-form-container h3 {
+                font-size: 1.5rem;
             }
         }*@
     </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Toggle giữa Login và Register
+            $('.form-tab').on('click', function() {
+                var tab = $(this).data('tab');
+                
+                $('.form-tab').removeClass('active');
+                $(this).addClass('active');
+                
+                if (tab === 'login') {
+                    $('#loginFormContainer').show();
+                    $('#registerFormContainer').hide();
+                } else {
+                    $('#loginFormContainer').hide();
+                    $('#registerFormContainer').show();
+                }
+            });
+
+            // Xử lý form login
+            $('#loginFormHome').on('submit', function(e) {
+                e.preventDefault();
+                
+                var form = $(this);
+                var formData = form.serialize();
+                var errorAlert = $('#loginErrorAlert');
+                var submitBtn = form.find('button[type="submit"]');
+                var originalText = submitBtn.html();
+                
+                errorAlert.addClass('d-none').find('span').text('');
+                submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...');
+                
+                $.ajax({
+                    url: '@Url.Action("Login", "Account")',
+                    type: 'POST',
+                    data: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response && response.success) {
+                            window.location.reload();
+                        } else {
+                            errorAlert.removeClass('d-none').find('span').text(response.message || 'Đăng nhập thất bại!');
+                            submitBtn.prop('disabled', false).html(originalText);
+                        }
+                    },
+                    error: function(xhr) {
+                        var errorMessage = 'Tên đăng nhập hoặc mật khẩu không đúng!';
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            if (response && response.message) errorMessage = response.message;
+                        } catch (e) {}
+                        errorAlert.removeClass('d-none').find('span').text(errorMessage);
+                        submitBtn.prop('disabled', false).html(originalText);
+                    }
+                });
+            });
+
+            // Xử lý form register
+            $('#registerFormHome').on('submit', function(e) {
+                e.preventDefault();
+                
+                var form = $(this);
+                var formData = form.serialize();
+                var errorAlert = $('#registerErrorAlert');
+                var successAlert = $('#registerSuccessAlert');
+                var submitBtn = form.find('button[type="submit"]');
+                var originalText = submitBtn.html();
+                
+                errorAlert.addClass('d-none').find('span').text('');
+                successAlert.addClass('d-none').find('span').text('');
+                submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...');
+                
+                $.ajax({
+                    url: '@Url.Action("Register", "Account")',
+                    type: 'POST',
+                    data: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response && response.success) {
+                            successAlert.removeClass('d-none').find('span').text(response.message || 'Đăng ký thành công! Vui lòng đăng nhập.');
+                            form[0].reset();
+                            // Tự động chuyển sang login sau 2 giây
+                            setTimeout(function() {
+                                $('.form-tab[data-tab="login"]').click();
+                            }, 2000);
+                        } else {
+                            errorAlert.removeClass('d-none').find('span').text(response.message || 'Đăng ký thất bại!');
+                        }
+                        submitBtn.prop('disabled', false).html(originalText);
+                    },
+                    error: function(xhr) {
+                        var errorMessage = 'Đăng ký thất bại! Vui lòng thử lại.';
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            if (response && response.message) errorMessage = response.message;
+                        } catch (e) {}
+                        errorAlert.removeClass('d-none').find('span').text(errorMessage);
+                        submitBtn.prop('disabled', false).html(originalText);
+                    }
+                });
+            });
+        });
+    </script>
 }
 
 <!-- Hero Section - Bao gồm cả footer -->
@@ -205,60 +573,165 @@
     
     <!-- Nội dung hero chính -->
     <div class="hero-content-wrapper">
-        <div class="hero-content">
-            <p class="hero-description">
-                Khám phá những điểm đến tuyệt vời và trải nghiệm những hành trình đáng nhớ. 
-                Chúng tôi mang đến cho bạn những tour du lịch độc đáo với dịch vụ chất lượng cao 
-                và giá cả hợp lý nhất.
-            </p>
-            <a href="@Url.Action("Index", "Tour")" class="hero-btn">Khám Phá Ngay</a>
+        @if (Session["TenDangNhap"] == null)
+        {
+            <div class="hero-split-container">
+                <!-- Bên trái - Text về du lịch -->
+                <div class="hero-text-section">
+                    <h1>Khám Phá Thế Giới</h1>
+                    <p>
+                        Chào mừng bạn đến với Du Lịch Khám Phá - nơi biến những giấc mơ du lịch thành hiện thực. 
+                        Chúng tôi mang đến những hành trình đáng nhớ, khám phá những điểm đến tuyệt vời 
+                        và trải nghiệm văn hóa đa dạng trên khắp đất nước Việt Nam.
+                    </p>
+                    <p>
+                        Từ những bãi biển xanh ngắt của Phú Quốc, đến thành phố sương mù Đà Lạt, 
+                        hay phố cổ Hội An cổ kính - mỗi điểm đến đều mang đến những trải nghiệm độc đáo 
+                        và đáng nhớ cho bạn.
+                    </p>
+                    <div class="hero-quote">
+                        "Mục tiêu của cuộc sống là sống hòa hợp với thiên nhiên"
+                    </div>
+                </div>
+
+                <!-- Bên phải - Form Login/Register -->
+                <div class="form-section">
+                    <!-- Tabs để chuyển đổi giữa Login và Register -->
+                    <div class="form-tabs">
+                        <button class="form-tab active" data-tab="login">
+                            <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                        </button>
+                        <button class="form-tab" data-tab="register">
+                            <i class="fas fa-user-plus me-2"></i>Đăng ký
+                        </button>
         </div>
-    </div>
 
-    <!-- Danh sách Tour (nếu có) - nằm trong hero section -->
-    @if (Model != null && Model.Count > 0)
-    {
-        <main class="content-section py-5">
-            <div class="container">
-                <div class="row">
-                @foreach (var tour in Model)
-                {
-                    <div class="col-lg-4 col-md-6 mb-4">
-                        <div class="card h-100 border-0 shadow-lg rounded-3 overflow-hidden tour-card" style="background-color: rgba(255, 255, 255, 0.95);">
-                            <!-- Hình ảnh tour -->
-                            <img src="@tour.HinhAnh" class="card-img-top" alt="@tour.TenTour" style="height: 200px; object-fit: cover;">
+                    <!-- Form Login -->
+                    <div class="login-form-container" id="loginFormContainer">
+                        <h3>Đăng nhập tài khoản</h3>
+                        <p class="text-center text-muted mb-4">Vui lòng nhập thông tin đăng nhập</p>
 
-                            <div class="card-body d-flex flex-column">
-                                <!-- Tiêu đề và Địa điểm -->
-                                <h5 class="card-title fw-semibold text-primary">@tour.TenTour</h5>
-                                <p class="card-subtitle mb-2 text-muted small">
-                                    <i class="fas fa-map-marker-alt me-1"></i>
-                                    @(tour.DiaDiemDuLich?.TenDiaDiem ?? "Chưa xác định")
-                                </p>
+                        @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @id = "loginFormHome" }))
+                        {
+                            @Html.AntiForgeryToken()
 
-                                <!-- Mô tả và Chi tiết -->
-                                <p class="card-text small text-truncate-3">@tour.MoTaNgan</p>
+                            <div id="loginErrorAlert" class="alert alert-danger d-none mb-3" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i><span></span>
+                            </div>
 
-                                <div class="mt-auto pt-3 border-top">
-                                    <!-- Giá -->
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="text-success fw-bold fs-5">
-                                            @string.Format("{0:N0}₫", tour.GiaNguoiLon)
-                                        </span>
-                                        <span class="badge bg-info text-dark">
-                                            Còn: @tour.SoChoConLai/@tour.SoCho chỗ
-                                        </span>
-                                    </div>
-
-                                    <!-- Nút chi tiết -->
-                                    <a href="@Url.Action("Details", "Tour", new { id = tour.IdTour })" class="btn btn-outline-primary w-100 rounded-pill">Xem chi tiết &raquo;</a>
+                            <div class="mb-3">
+                                <label for="tenDangNhapHome" class="form-label">Tên đăng nhập</label>
+                                <div class="input-icon-wrapper">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" class="form-control" id="tenDangNhapHome" name="tenDangNhap" 
+                                           placeholder="Nhập tên đăng nhập" required>
                                 </div>
                             </div>
-                        </div>
+
+                            <div class="mb-3">
+                                <label for="matKhauHome" class="form-label">Mật khẩu</label>
+                                <div class="input-icon-wrapper">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" class="form-control" id="matKhauHome" name="matKhau" 
+                                           placeholder="Nhập mật khẩu" required>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <label class="text-muted" style="color: rgba(255, 255, 255, 0.8) !important;">
+                                    <input type="checkbox" name="rememberMe" id="rememberMeHome" class="me-2">
+                                    Ghi nhớ đăng nhập
+                                </label>
+                                <a href="#" class="forgot-password">Quên mật khẩu?</a>
+                            </div>
+
+                            <button type="submit" class="btn btn-login-submit mb-3">
+                                <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                            </button>
+                        }
                     </div>
-                }
+
+                    <!-- Form Register -->
+                    <div class="register-form-container" id="registerFormContainer">
+                        <h3>Đăng ký tài khoản</h3>
+                        <p class="text-center text-muted mb-4">Tạo tài khoản mới của bạn</p>
+
+                        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @id = "registerFormHome" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div id="registerErrorAlert" class="alert alert-danger d-none mb-3" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i><span></span>
+                            </div>
+
+                            <div id="registerSuccessAlert" class="alert alert-success d-none mb-3" role="alert">
+                                <i class="fas fa-check-circle me-2"></i><span></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="tenDangNhapRegister" class="form-label">Tên đăng nhập <span class="text-danger">*</span></label>
+                                <div class="input-icon-wrapper">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" class="form-control" id="tenDangNhapRegister" name="tenDangNhap" 
+                                           placeholder="Tên đăng nhập" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="matKhauRegister" class="form-label">Mật khẩu <span class="text-danger">*</span></label>
+                                <div class="input-icon-wrapper">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" class="form-control" id="matKhauRegister" name="matKhau" 
+                                           placeholder="Mật khẩu" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="hoTenRegister" class="form-label">Họ tên <span class="text-danger">*</span></label>
+                                <div class="input-icon-wrapper">
+                                    <i class="fas fa-id-card"></i>
+                                    <input type="text" class="form-control" id="hoTenRegister" name="hoTen" 
+                                           placeholder="Họ tên đầy đủ" required>
+                                </div>
+                                </div>
+
+                            <div class="mb-3">
+                                <label for="emailRegister" class="form-label">Email <span class="text-danger">*</span></label>
+                                <div class="input-icon-wrapper">
+                                    <i class="fas fa-envelope"></i>
+                                    <input type="email" class="form-control" id="emailRegister" name="email" 
+                                           placeholder="Địa chỉ Email" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="soDienThoaiRegister" class="form-label">Số điện thoại</label>
+                                <div class="input-icon-wrapper">
+                                    <i class="fas fa-phone"></i>
+                                    <input type="text" class="form-control" id="soDienThoaiRegister" name="soDienThoai" 
+                                           placeholder="Số điện thoại (Tùy chọn)">
+                            </div>
+                        </div>
+
+                            <button type="submit" class="btn btn-register-submit mb-3">
+                                <i class="fas fa-user-plus me-2"></i>Đăng ký
+                            </button>
+                        }
+                    </div>
                 </div>
             </div>
-        </main>
-    }
+        }
+        else
+        {
+            <!-- Nội dung khi đã đăng nhập -->
+            <!-- <div class="hero-content" style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <p class="hero-description">
+                    Khám phá những điểm đến tuyệt vời và trải nghiệm những hành trình đáng nhớ. 
+                    Chúng tôi mang đến cho bạn những tour du lịch độc đáo với dịch vụ chất lượng cao 
+                    và giá cả hợp lý nhất.
+                </p>
+                <a href="@Url.Action("Index", "Tour")" class="hero-btn">Khám Phá Ngay</a>
+            </div> -->
+        }
+    </div>
 </section>

@@ -1,4 +1,5 @@
 ﻿using DuLich_Tour.Models;
+using DuLich_Tour.Attributes;
 using System;
 using System.Linq;
 using System.Security.Cryptography;
@@ -184,7 +185,7 @@ namespace DuLich_Tour.Controllers
                     user.LanDangNhapCuoi = DateTime.Now;
                     db.SaveChanges();
 
-                    return RedirectToAction("Index", "Home"); // chuyển đến trang chính
+                    return RedirectToAction("Index", "Tour"); // chuyển đến trang tour
                 }
             } // db.Dispose() được gọi tự động ở đây
 
@@ -215,6 +216,13 @@ namespace DuLich_Tour.Controllers
                     Session["TenDangNhap"] = user.TenDangNhap;
                     Session["VaiTro"] = user.VaiTro;
 
+                    // Lấy IdKhachHang nếu có
+                    var khachHang = db.KhachHangs.FirstOrDefault(k => k.IdTaiKhoan == user.IdTaiKhoan);
+                    if (khachHang != null)
+                    {
+                        Session["IdKhachHang"] = khachHang.IdKhachHang;
+                    }
+
                     // 4. Cập nhật lần đăng nhập cuối
                     user.LanDangNhapCuoi = DateTime.Now;
                     db.SaveChanges();
@@ -224,6 +232,139 @@ namespace DuLich_Tour.Controllers
             }
 
             return Json(new { success = false, message = "Tên đăng nhập hoặc mật khẩu không đúng!" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// GET: /Account/Profile - Xem và cập nhật thông tin cá nhân
+        /// </summary>
+        [RequireLogin]
+        public ActionResult Profile()
+        {
+            int? idTaiKhoan = Session["IdTaiKhoan"] as int?;
+            if (!idTaiKhoan.HasValue)
+            {
+                return RedirectToAction("Login");
+            }
+
+            using (var db = new TourDbContext())
+            {
+                var khachHang = db.KhachHangs.FirstOrDefault(k => k.IdTaiKhoan == idTaiKhoan.Value);
+                if (khachHang == null)
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy thông tin khách hàng.";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                var viewModel = new Models.ViewModels.ProfileViewModel
+                {
+                    IdKhachHang = khachHang.IdKhachHang,
+                    HoTen = khachHang.HoTen,
+                    Email = khachHang.Email,
+                    SoDienThoai = khachHang.SoDienThoai,
+                    DiaChi = khachHang.DiaChi,
+                    NgaySinh = khachHang.NgaySinh,
+                    GioiTinh = khachHang.GioiTinh
+                };
+
+                return View(viewModel);
+            }
+        }
+
+        /// <summary>
+        /// POST: /Account/Profile - Cập nhật thông tin cá nhân
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [RequireLogin]
+        public ActionResult Profile(Models.ViewModels.ProfileViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            int? idTaiKhoan = Session["IdTaiKhoan"] as int?;
+            if (!idTaiKhoan.HasValue)
+            {
+                return RedirectToAction("Login");
+            }
+
+            using (var db = new TourDbContext())
+            {
+                var khachHang = db.KhachHangs.FirstOrDefault(k => k.IdTaiKhoan == idTaiKhoan.Value);
+                if (khachHang == null || khachHang.IdKhachHang != model.IdKhachHang)
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy thông tin khách hàng.";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                // Cập nhật thông tin
+                khachHang.HoTen = model.HoTen;
+                khachHang.Email = model.Email;
+                khachHang.SoDienThoai = model.SoDienThoai;
+                khachHang.DiaChi = model.DiaChi;
+                khachHang.NgaySinh = model.NgaySinh;
+                khachHang.GioiTinh = model.GioiTinh;
+
+                db.SaveChanges();
+
+                TempData["SuccessMessage"] = "Cập nhật thông tin thành công!";
+                return RedirectToAction("Profile");
+            }
+        }
+
+        /// <summary>
+        /// GET: /Account/ChangePassword - Form đổi mật khẩu
+        /// </summary>
+        [RequireLogin]
+        public ActionResult ChangePassword()
+        {
+            return View(new Models.ViewModels.ChangePasswordViewModel());
+        }
+
+        /// <summary>
+        /// POST: /Account/ChangePassword - Xử lý đổi mật khẩu
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [RequireLogin]
+        public ActionResult ChangePassword(Models.ViewModels.ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            int? idTaiKhoan = Session["IdTaiKhoan"] as int?;
+            if (!idTaiKhoan.HasValue)
+            {
+                return RedirectToAction("Login");
+            }
+
+            using (var db = new TourDbContext())
+            {
+                var taiKhoan = db.TaiKhoans.Find(idTaiKhoan.Value);
+                if (taiKhoan == null)
+                {
+                    TempData["ErrorMessage"] = "Không tìm thấy tài khoản.";
+                    return RedirectToAction("Login");
+                }
+
+                // Kiểm tra mật khẩu cũ
+                string hashedOldPassword = HashPassword(model.MatKhauCu);
+                if (taiKhoan.MatKhau != hashedOldPassword)
+                {
+                    ModelState.AddModelError("MatKhauCu", "Mật khẩu hiện tại không đúng.");
+                    return View(model);
+                }
+
+                // Cập nhật mật khẩu mới
+                taiKhoan.MatKhau = HashPassword(model.MatKhauMoi);
+                db.SaveChanges();
+
+                TempData["SuccessMessage"] = "Đổi mật khẩu thành công!";
+                return RedirectToAction("Profile");
+            }
         }
 
         // GET: /Account/Logout

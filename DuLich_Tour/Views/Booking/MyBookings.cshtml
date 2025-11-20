@@ -1,0 +1,234 @@
+@model List<DuLich_Tour.Models.DatTour>
+@{
+    ViewBag.Title = "Lịch Sử Đặt Tour";
+}
+
+@section Styles {
+    <style>
+        .bookings-container {
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding: 3rem 0;
+        }
+
+        .page-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .page-title i {
+            color: #007bff;
+        }
+
+        .booking-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: none;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .booking-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .booking-header {
+            padding: 1.5rem;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .booking-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .booking-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .booking-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .booking-body {
+            padding: 1.5rem;
+        }
+
+        .booking-info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .booking-info-item i {
+            color: #007bff;
+            width: 20px;
+            text-align: center;
+        }
+
+        .booking-footer {
+            padding: 1.5rem;
+            border-top: 2px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .booking-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #007bff;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-state-icon {
+            font-size: 5rem;
+            color: #ddd;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-text {
+            color: #999;
+            margin-bottom: 2rem;
+        }
+    </style>
+}
+
+<div class="bookings-container">
+    <div class="container">
+        <div class="page-header">
+            <h2 class="page-title">
+                <i class="fas fa-shopping-cart"></i>
+                Lịch Sử Đặt Tour
+            </h2>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm">
+                <i class="fas fa-check-circle me-2"></i>
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (Model == null || Model.Count == 0)
+        {
+            <div class="empty-state">
+                <i class="fas fa-shopping-cart empty-state-icon"></i>
+                <h4 class="empty-state-title">Bạn chưa có đặt tour nào</h4>
+                <p class="empty-state-text">Hãy khám phá và đặt tour ngay để trải nghiệm những hành trình tuyệt vời!</p>
+                <a href="@Url.Action("Index", "Tour")" class="btn btn-primary btn-lg rounded-pill px-5">
+                    <i class="fas fa-search me-2"></i>Tìm tour ngay
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                @foreach (var booking in Model)
+                {
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="booking-card">
+                            <div class="booking-header">
+                                <div>
+                                    <h5 class="booking-title">@(booking.TourDuLich?.TenTour ?? "Tour không tồn tại")</h5>
+                                    <div class="booking-date">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        @booking.NgayDat.ToString("dd/MM/yyyy HH:mm")
+                                    </div>
+                                </div>
+                                <span class="booking-badge 
+                                    @(booking.TrangThai == "da-xac-nhan" ? "bg-success text-white" : 
+                                      booking.TrangThai == "da-huy" ? "bg-danger text-white" : 
+                                      booking.TrangThai == "da-thanh-toan" ? "bg-primary text-white" : "bg-warning text-dark")">
+                                    @(booking.TrangThai == "da-xac-nhan" ? "Đã xác nhận" : 
+                                      booking.TrangThai == "da-huy" ? "Đã hủy" : 
+                                      booking.TrangThai == "da-thanh-toan" ? "Đã thanh toán" : "Chờ xác nhận")
+                                </span>
+                            </div>
+
+                            <div class="booking-body">
+                                @if (booking.TourDuLich != null)
+                                {
+                                    <div class="booking-info-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>@(booking.TourDuLich.DiaDiemDuLich?.TenDiaDiem ?? "Chưa xác định")</span>
+                                    </div>
+                                    
+                                    if (booking.TourDuLich.NgayBatDau.HasValue)
+                                    {
+                                        <div class="booking-info-item">
+                                            <i class="fas fa-calendar-alt"></i>
+                                            <span>Khởi hành: @booking.TourDuLich.NgayBatDau.Value.ToString("dd/MM/yyyy")</span>
+                                        </div>
+                                    }
+
+                                    <div class="booking-info-item">
+                                        <i class="fas fa-users"></i>
+                                        <span>@booking.SoNguoiLon người lớn, @booking.SoTreEm trẻ em</span>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="booking-footer">
+                                <div class="booking-price">
+                                    @string.Format("{0:N0}₫", booking.TongTien)
+                                </div>
+                                <a href="@Url.Action("Details", "Booking", new { id = booking.IdDatTour })" class="btn btn-outline-primary btn-sm rounded-pill">
+                                    <i class="fas fa-eye me-1"></i>Chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

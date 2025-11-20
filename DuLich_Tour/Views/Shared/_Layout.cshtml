@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using DuLich_Tour.Models
+@using System.Linq
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
@@ -172,40 +174,75 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                 <ul class="navbar-nav align-items-center gap-3">
                     <li class="nav-item">@Html.ActionLink("Trang chủ", "Index", "Home", null, new { @class = "nav-link text-dark" })</li>
                     <li class="nav-item">@Html.ActionLink("Tours", "Index", "Tour", null, new { @class = "nav-link text-dark" })</li>
                     <li class="nav-item">@Html.ActionLink("Liên hệ", "Contact", "Home", null, new { @class = "nav-link text-dark" })</li>
+                </ul>
+
+                <!-- Search Box trong Navbar -->
+                <div class="d-flex align-items-center gap-3">
+                    <form action="@Url.Action("Index", "Tour")" method="get" class="d-flex align-items-center" style="min-width: 300px;">
+                        <div class="input-group" style="border-radius: 25px; overflow: hidden;">
+                            <input type="text" name="search" class="form-control" placeholder="Tìm kiếm tour..." value="@Request.QueryString["search"]" style="border-radius: 25px 0 0 25px; border-right: none;">
+                            <button type="submit" class="btn btn-primary" style="border-radius: 0 25px 25px 0; border-left: none;">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
 
                     @if (Session["TenDangNhap"] != null)
                     {
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-primary fw-bold d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle fs-4"></i> @Session["TenDangNhap"]
-                            </a>
+                        // Lấy số lượng đơn hàng
+                        int bookingCount = 0;
+                        int? idTaiKhoan = Session["IdTaiKhoan"] as int?;
+                        if (idTaiKhoan.HasValue)
+                        {
+                            using (var db = new TourDbContext())
+                            {
+                                var khachHang = db.KhachHangs.FirstOrDefault(k => k.IdTaiKhoan == idTaiKhoan.Value);
+                                if (khachHang != null)
+                                {
+                                    bookingCount = db.DatTours.Count(d => d.IdKhachHang == khachHang.IdKhachHang && d.TrangThai != "da-huy");
+                                }
+                            }
+                        }
+
+                        <ul class="navbar-nav align-items-center">
+                            <li class="nav-item me-3">
+                                <a href="@Url.Action("MyBookings", "Booking")" class="nav-link position-relative">
+                                    <i class="fas fa-shopping-cart fs-5 text-primary"></i>
+                                    @if (bookingCount > 0)
+                                    {
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem;">
+                                            @bookingCount
+                                        </span>
+                                    }
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-primary fw-bold d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user-circle fs-4"></i> @Session["TenDangNhap"]
+                                </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Hồ sơ cá nhân</a></li>
-                                <li><a class="dropdown-item" href="#">Đơn hàng của tôi</a></li>
+                                <li>@Html.ActionLink("Hồ sơ cá nhân", "Profile", "Account", null, new { @class = "dropdown-item" })</li>
+                                <li>
+                                    <a href="@Url.Action("MyBookings", "Booking")" class="dropdown-item position-relative">
+                                        <i class="fas fa-shopping-cart me-2"></i>Đơn hàng của tôi
+                                        @if (bookingCount > 0)
+                                        {
+                                            <span class="badge bg-primary rounded-pill float-end">@bookingCount</span>
+                                        }
+                                    </a>
+                                </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>@Html.ActionLink("Đăng xuất", "Logout", "Account", null, new { @class = "dropdown-item text-danger" })</li>
                             </ul>
-                        </li>
+                            </li>
+                        </ul>
                     }
-                    else
-                    {
-                        <li class="nav-item">
-                            <button type="button" class="btn btn-outline-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#loginModal">
-                                Đăng nhập
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button type="button" class="btn btn-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#registerModal">
-                                Đăng ký
-                            </button>
-                        </li>
-                    }
-                </ul>
+                </div>
             </div>
         </div>
     </nav>
@@ -445,7 +482,7 @@
                         if (response && response.success) {
                             var loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
                             if (loginModal) loginModal.hide();
-                            window.location.reload();
+                            window.location.href = '@Url.Action("Index", "Tour")';
                         } else {
                             errorAlert.removeClass('d-none').find('span').text(response.message || 'Đăng nhập thất bại!');
                             submitBtn.prop('disabled', false).html(originalText);
