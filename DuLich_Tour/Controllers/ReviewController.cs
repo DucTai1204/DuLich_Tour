@@ -32,10 +32,20 @@ namespace DuLich_Tour.Controllers
 
             using (var db = new TourDbContext())
             {
+                // Tắt lazy loading
+                db.Configuration.LazyLoadingEnabled = false;
+                db.Configuration.ProxyCreationEnabled = false;
+
                 tour = db.TourDuLiches.Find(tourId);
                 if (tour == null)
                 {
                     return HttpNotFound();
+                }
+
+                // Load navigation property trước khi DbContext bị dispose
+                if (tour.IdDiaDiem.HasValue)
+                {
+                    tour.DiaDiemDuLich = db.DiaDiemDuLiches.Find(tour.IdDiaDiem.Value);
                 }
 
                 // Kiểm tra khách hàng đã đặt tour này chưa
@@ -89,7 +99,15 @@ namespace DuLich_Tour.Controllers
             {
                 using (var db = new TourDbContext())
                 {
+                    // Tắt lazy loading
+                    db.Configuration.LazyLoadingEnabled = false;
+                    db.Configuration.ProxyCreationEnabled = false;
+
                     var tour = db.TourDuLiches.Find(model.IdTour);
+                    if (tour != null && tour.IdDiaDiem.HasValue)
+                    {
+                        tour.DiaDiemDuLich = db.DiaDiemDuLiches.Find(tour.IdDiaDiem.Value);
+                    }
                     ViewBag.Tour = tour;
                 }
                 return View(model);
@@ -148,6 +166,10 @@ namespace DuLich_Tour.Controllers
 
             using (var db = new TourDbContext())
             {
+                // Tắt lazy loading
+                db.Configuration.LazyLoadingEnabled = false;
+                db.Configuration.ProxyCreationEnabled = false;
+
                 var danhGia = db.DanhGiaTours.Find(id);
                 if (danhGia == null)
                 {
@@ -164,6 +186,10 @@ namespace DuLich_Tour.Controllers
 
                 // Load tour info
                 danhGia.TourDuLich = db.TourDuLiches.Find(danhGia.IdTour);
+                if (danhGia.TourDuLich != null && danhGia.TourDuLich.IdDiaDiem.HasValue)
+                {
+                    danhGia.TourDuLich.DiaDiemDuLich = db.DiaDiemDuLiches.Find(danhGia.TourDuLich.IdDiaDiem.Value);
+                }
                 ViewBag.Tour = danhGia.TourDuLich;
 
                 return View(danhGia);
@@ -181,7 +207,15 @@ namespace DuLich_Tour.Controllers
             {
                 using (var db = new TourDbContext())
                 {
+                    // Tắt lazy loading
+                    db.Configuration.LazyLoadingEnabled = false;
+                    db.Configuration.ProxyCreationEnabled = false;
+
                     var tour = db.TourDuLiches.Find(model.IdTour);
+                    if (tour != null && tour.IdDiaDiem.HasValue)
+                    {
+                        tour.DiaDiemDuLich = db.DiaDiemDuLiches.Find(tour.IdDiaDiem.Value);
+                    }
                     ViewBag.Tour = tour;
                 }
                 return View(model);

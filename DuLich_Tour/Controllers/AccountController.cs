@@ -372,7 +372,7 @@ namespace DuLich_Tour.Controllers
         {
             Session.Clear();
             // Nếu muốn loại bỏ Cookie Authentication cũng có thể thêm FormsAuthentication.SignOut();
-            return RedirectToAction("Login");
+            return RedirectToAction("Index", "Home");
         }
 
         // Hàm hash mật khẩu (MD5 - Giữ nguyên logic của bạn)

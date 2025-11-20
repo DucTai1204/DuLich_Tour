@@ -228,13 +228,7 @@
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>@Html.ActionLink("Hồ sơ cá nhân", "Profile", "Account", null, new { @class = "dropdown-item" })</li>
                                 <li>
-                                    <a href="@Url.Action("MyBookings", "Booking")" class="dropdown-item position-relative">
-                                        <i class="fas fa-shopping-cart me-2"></i>Đơn hàng của tôi
-                                        @if (bookingCount > 0)
-                                        {
-                                            <span class="badge bg-primary rounded-pill float-end">@bookingCount</span>
-                                        }
-                                    </a>
+                                   
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>@Html.ActionLink("Đăng xuất", "Logout", "Account", null, new { @class = "dropdown-item text-danger" })</li>

@@ -288,6 +288,15 @@ namespace DuLich_Tour.Controllers
                     canCancel = daysUntilDeparture >= 3 && datTour.TrangThai != "da-huy";
                 }
 
+                // Kiểm tra có thể đánh giá không (đã xác nhận và chưa đánh giá)
+                bool canReview = false;
+                bool hasReviewed = false;
+                if (datTour.TrangThai == "da-xac-nhan" && khachHang != null)
+                {
+                    hasReviewed = db.DanhGiaTours.Any(d => d.IdTour == datTour.IdTour && d.IdKhachHang == khachHang.IdKhachHang);
+                    canReview = !hasReviewed;
+                }
+
                 var viewModel = new BookingDetailsViewModel
                 {
                     DatTour = datTour,
@@ -296,6 +305,9 @@ namespace DuLich_Tour.Controllers
                     ThanhToans = thanhToans,
                     CanCancel = canCancel
                 };
+
+                ViewBag.CanReview = canReview;
+                ViewBag.HasReviewed = hasReviewed;
 
                 return View(viewModel);
             }

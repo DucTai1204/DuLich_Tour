@@ -36,7 +36,7 @@
                             <i class="fas fa-map-marker-alt me-2"></i>
                             @(Model.TourDuLich.DiaDiemDuLich?.TenDiaDiem ?? "Chưa xác định")
                         </p>
-                        @if (Model.TourDuLich.NgayBatDau.HasValue && Model.TourDuLich.NgayKetThuc.HasValue)
+                        if (Model.TourDuLich.NgayBatDau.HasValue && Model.TourDuLich.NgayKetThuc.HasValue)
                         {
                             var days = (Model.TourDuLich.NgayKetThuc.Value - Model.TourDuLich.NgayBatDau.Value).Days;
                             <p class="mb-3">
@@ -168,6 +168,27 @@
                         <a href="@Url.Action("Pay", "Payment", new { bookingId = Model.DatTour.IdDatTour })" class="btn btn-primary w-100">
                             <i class="fas fa-credit-card me-2"></i>Thanh toán
                         </a>
+                    }
+
+                    @{
+                        bool canReview = ViewBag.CanReview != null ? (bool)ViewBag.CanReview : false;
+                        bool hasReviewed = ViewBag.HasReviewed != null ? (bool)ViewBag.HasReviewed : false;
+                    }
+
+                    @if (Model.DatTour.TrangThai == "da-xac-nhan")
+                    {
+                        if (canReview)
+                        {
+                            <a href="@Url.Action("Create", "Review", new { tourId = Model.DatTour.IdTour })" class="btn btn-success w-100 mt-2">
+                                <i class="fas fa-star me-2"></i>Đánh giá tour
+                            </a>
+                        }
+                        else if (hasReviewed)
+                        {
+                            <a href="@Url.Action("MyReviews", "Review")" class="btn btn-outline-info w-100 mt-2">
+                                <i class="fas fa-check-circle me-2"></i>Đã đánh giá
+                            </a>
+                        }
                     }
 
                     <a href="@Url.Action("MyBookings", "Booking")" class="btn btn-outline-secondary w-100 mt-2">
