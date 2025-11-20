@@ -1,32 +1,41 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Du Lịch Khám Phá</title>
 
+    <!-- Bootstrap 5 + FontAwesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Section Styles cho các trang như Login, Register... -->
+    @RenderSection("Styles", required: false)
 
     <style>
-        /* CSS Tùy chỉnh cho Giao diện Du Lịch */
         body {
-            background-color: #f0f4f8; /* Màu nền nhẹ nhàng */
+            background-color: #f0f4f8;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #333;
+            margin: 0;
         }
 
-        /* Navbar */
+        /* Navbar đẹp, hiện đại */
+        .navbar {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
         .navbar-brand {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: #007bff !important; /* Màu xanh chủ đạo */
+            font-weight: 800;
+            font-size: 1.9rem;
+            color: #007bff !important;
         }
 
         .nav-link {
+            font-weight: 500;
             transition: all 0.3s ease;
         }
 
@@ -35,66 +44,165 @@
                 transform: translateY(-2px);
             }
 
-        /* Footer */
+        /* Footer tối màu sang trọng */
         .footer-tour {
-            background-color: #212529; /* Dark Footer */
+            background: #1a1a1a;
             color: #ccc;
-            padding: 50px 0;
-            margin-top: 50px;
+            padding: 70px 0 30px;
+            margin-top: 100px;
         }
 
+            .footer-tour h5 {
+                color: #fff;
+                font-weight: 600;
+            }
+
             .footer-tour a {
-                color: #8c8c8c;
+                color: #999;
                 text-decoration: none;
-                transition: color 0.3s ease;
+                transition: color 0.3s;
             }
 
                 .footer-tour a:hover {
-                    color: #ffffff;
+                    color: #fff;
                 }
 
             .footer-tour .list-unstyled li {
-                margin-bottom: 8px;
+                margin-bottom: 10px;
             }
+
+        /* Login & Register Modal Styles */
+        #loginModal .modal-content,
+        #registerModal .modal-content {
+            border-radius: 1.5rem;
+            border: none;
+            overflow: hidden;
+        }
+
+        #loginModal .modal-header,
+        #registerModal .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        #loginModal .modal-header .btn-close,
+        #registerModal .modal-header .btn-close {
+            filter: invert(1);
+        }
+
+        #loginModal .modal-body,
+        #registerModal .modal-body {
+            padding: 2rem;
+        }
+
+        #loginModal .input-group-text,
+        #registerModal .input-group-text {
+            border-radius: 0.75rem 0 0 0.75rem;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border: 2px solid #e9ecef;
+            border-right: none;
+            color: #667eea;
+            width: 50px;
+            justify-content: center;
+        }
+
+        #loginModal .form-control,
+        #registerModal .form-control {
+            border-radius: 0 0.75rem 0.75rem 0;
+            border: 2px solid #e9ecef;
+            border-left: none;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        #loginModal .form-control:focus,
+        #registerModal .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        #loginModal .btn-primary,
+        #registerModal .btn-success {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            transition: all 0.3s ease;
+            padding: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        #loginModal .btn-primary:hover,
+        #registerModal .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        #registerModal .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        #registerModal .btn-success:hover {
+            background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);
+            box-shadow: 0 8px 20px rgba(17, 153, 142, 0.4);
+        }
+
+        .modal-link {
+            color: #667eea;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
-        <div class="container">
-            @Html.ActionLink("✈️ Du Lịch Khám Phá", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top" id="mainNavbar">
+        <div class="container">
+            @Html.ActionLink("Du Lịch Khám Phá", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav align-items-center">
-                    <li class="nav-item">@Html.ActionLink("Trang chủ", "Index", "Home", null, new { @class = "nav-link text-dark mx-2" })</li>
-                    <li class="nav-item">@Html.ActionLink("Tours", "Index", "Tour", null, new { @class = "nav-link text-dark mx-2" })</li>
-                    <li class="nav-item">@Html.ActionLink("Liên hệ", "Contact", "Home", null, new { @class = "nav-link text-dark mx-2" })</li>
+                <ul class="navbar-nav align-items-center gap-3">
+                    <li class="nav-item">@Html.ActionLink("Trang chủ", "Index", "Home", null, new { @class = "nav-link text-dark" })</li>
+                    <li class="nav-item">@Html.ActionLink("Tours", "Index", "Tour", null, new { @class = "nav-link text-dark" })</li>
+                    <li class="nav-item">@Html.ActionLink("Liên hệ", "Contact", "Home", null, new { @class = "nav-link text-dark" })</li>
 
                     @if (Session["TenDangNhap"] != null)
                     {
-                        // HIỂN THỊ KHI ĐÃ ĐĂNG NHẬP
-                        <li class="nav-item ms-3">
-                            @* Thẻ A này có thể là link đến trang Profile *@
-                            <a class="nav-link text-primary mx-2 fw-bold" href="#">
-                                <i class="fas fa-user-circle me-1"></i> Xin chào, @Session["TenDangNhap"]!
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-primary fw-bold d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle fs-4"></i> @Session["TenDangNhap"]
                             </a>
-                        </li>
-                        <li class="nav-item ms-2">
-                            @* Nút Đăng xuất *@
-                            @Html.ActionLink("Đăng xuất", "Logout", "Account", null, new { @class = "btn btn-danger rounded-pill px-3" })
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#">Hồ sơ cá nhân</a></li>
+                                <li><a class="dropdown-item" href="#">Đơn hàng của tôi</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>@Html.ActionLink("Đăng xuất", "Logout", "Account", null, new { @class = "dropdown-item text-danger" })</li>
+                            </ul>
                         </li>
                     }
                     else
                     {
-                        // HIỂN THỊ KHI CHƯA ĐĂNG NHẬP
-                        <li class="nav-item ms-3">
-                            @Html.ActionLink("Đăng nhập", "Login", "Account", null, new { @class = "btn btn-outline-primary rounded-pill px-3" })
+                        <li class="nav-item">
+                            <button type="button" class="btn btn-outline-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                Đăng nhập
+                            </button>
                         </li>
-                        <li class="nav-item ms-2">
-                            @Html.ActionLink("Đăng ký", "Register", "Account", null, new { @class = "btn btn-primary rounded-pill px-3" })
+                        <li class="nav-item">
+                            <button type="button" class="btn btn-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#registerModal">
+                                Đăng ký
+                            </button>
                         </li>
                     }
                 </ul>
@@ -102,61 +210,320 @@
         </div>
     </nav>
 
-    <div class="container my-5">
+    <!-- NỘI DUNG CHÍNH -->
+    <div class="container my-5" id="mainContent">
         @RenderBody()
     </div>
 
+    <!-- FOOTER -->
     <footer class="footer-tour">
         <div class="container">
             <div class="row">
-                <div class="col-md-3 mb-4 mb-md-0">
-                    <h5 class="text-white mb-3">Về Du Lịch Khám Phá</h5>
-                    <p class="small">Chúng tôi cam kết mang lại những trải nghiệm du lịch tuyệt vời nhất, an toàn và đáng nhớ. Cùng nhau khám phá thế giới!</p>
+                <div class="col-lg-3 mb-4">
+                    <h5>Về Du Lịch Khám Phá</h5>
+                    <p class="small">Chúng tôi mang đến những hành trình tuyệt vời nhất với giá tốt nhất. Cùng bạn chinh phục mọi điểm đến!</p>
                 </div>
-
-                <div class="col-md-3 mb-4 mb-md-0">
-                    <h5 class="text-white mb-3">Liên kết</h5>
-                    <ul class="list-unstyled">
+                <div class="col-lg-3 mb-4">
+                    <h5>Liên kết nhanh</h5>
+                    <ul class="list-unstyled small">
                         <li>@Html.ActionLink("Về chúng tôi", "About", "Home")</li>
-                        <li>@Html.ActionLink("Chính sách bảo mật", "Privacy", "Home")</li>
-                        <li>@Html.ActionLink("Điều khoản dịch vụ", "Terms", "Home")</li>
-                        <li>@Html.ActionLink("Cẩm nang du lịch", "Blog", "Home")</li>
+                        <li>@Html.ActionLink("Chính sách", "Privacy", "Home")</li>
+                        <li>@Html.ActionLink("Điều khoản", "Terms", "Home")</li>
+                        <li>@Html.ActionLink("Blog du lịch", "Blog", "Home")</li>
                     </ul>
                 </div>
-
-                <div class="col-md-3 mb-4 mb-md-0">
-                    <h5 class="text-white mb-3">Hỗ trợ</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-phone-alt me-2"></i> Hotline: 1900-6868</li>
-                        <li><i class="fas fa-envelope me-2"></i> Email: support@dulichkhampa.vn</li>
-                        <li><i class="fas fa-map-marker-alt me-2"></i> Trụ sở: Số 1 Đường ABC, TP.HCM</li>
+                <div class="col-lg-3 mb-4">
+                    <h5>Hỗ trợ khách hàng</h5>
+                    <ul class="list-unstyled small">
+                        <li><i class="fas fa-phone-alt me-2"></i> Hotline: 1900 6868</li>
+                        <li><i class="fas fa-envelope me-2"></i> support@dulichkhampa.vn</li>
+                        <li><i class="fas fa-map-marker-alt me-2"></i> TP. Hồ Chí Minh</li>
                     </ul>
                 </div>
-
-                <div class="col-md-3">
-                    <h5 class="text-white mb-3">Theo dõi & Thanh toán</h5>
+                <div class="col-lg-3">
+                    <h5>Theo dõi chúng tôi</h5>
                     <div class="mb-3">
-                        <a href="#" class="btn btn-outline-secondary me-2"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="btn btn-outline-secondary me-2"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="btn btn-outline-secondary"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle me-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle me-2"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i class="fab fa-tiktok"></i></a>
                     </div>
-                    <p class="small mt-3">Chấp nhận thanh toán:</p>
+                    <p class="small mt-3">Thanh toán an toàn:</p>
                     <i class="fab fa-cc-visa fa-2x me-2"></i>
                     <i class="fab fa-cc-mastercard fa-2x me-2"></i>
-                    <i class="fab fa-cc-paypal fa-2x"></i>
+                    <i class="fas fa-mobile-alt fa-2x"></i>
                 </div>
             </div>
-
-            <hr class="my-4" style="border-color: #495057;">
-
-            <div class="text-center small text-muted">
-                &copy; @DateTime.Now.Year - Du Lịch Khám Phá. All rights reserved.
+            <hr class="my-4 border-secondary">
+            <div class="text-center small">
+                © @DateTime.Now.Year Du Lịch Khám Phá. Được xây dựng với tình yêu du lịch
             </div>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Login Modal -->
+    @if (Session["TenDangNhap"] == null)
+    {
+        <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content shadow-lg">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold fs-4" id="loginModalLabel">
+                            <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @id = "loginFormModal" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            
+                            <div id="loginErrorAlert" class="alert alert-danger d-none" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i><span></span>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="tenDangNhapModal" class="form-label fw-semibold mb-2">Tên đăng nhập</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" class="form-control" id="tenDangNhapModal" name="tenDangNhap" placeholder="Nhập tên đăng nhập" required autofocus>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="matKhauModal" class="form-label fw-semibold mb-2">Mật khẩu</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" class="form-control" id="matKhauModal" name="matKhau" placeholder="Nhập mật khẩu" required>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                                    <label class="form-check-label text-muted small" for="rememberMe">
+                                        Ghi nhớ đăng nhập
+                                    </label>
+                                </div>
+                                <a href="#" class="text-decoration-none text-muted small">Quên mật khẩu?</a>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100 rounded-pill">
+                                <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                            </button>
+                        }
+                        
+                        <hr class="my-4">
+                        <div class="text-center">
+                            <p class="text-muted small mb-2">Chưa có tài khoản?</p>
+                            <a href="#" class="modal-link" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#registerModal">
+                                Đăng ký ngay <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Modal -->
+        <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                <div class="modal-content shadow-lg">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold fs-4" id="registerModalLabel">
+                            <i class="fas fa-user-plus me-2"></i>Đăng ký tài khoản
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @id = "registerFormModal" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            
+                            <div id="registerErrorAlert" class="alert alert-danger d-none" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i><span></span>
+                            </div>
+                            
+                            <div id="registerSuccessAlert" class="alert alert-success d-none" role="alert">
+                                <i class="fas fa-check-circle me-2"></i><span></span>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="tenDangNhapRegister" class="form-label fw-semibold mb-2">Tên đăng nhập <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                        <input type="text" class="form-control" id="tenDangNhapRegister" name="tenDangNhap" placeholder="Tên đăng nhập" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="matKhauRegister" class="form-label fw-semibold mb-2">Mật khẩu <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                        <input type="password" class="form-control" id="matKhauRegister" name="matKhau" placeholder="Mật khẩu" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="hoTenRegister" class="form-label fw-semibold mb-2">Họ tên <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                    <input type="text" class="form-control" id="hoTenRegister" name="hoTen" placeholder="Họ tên đầy đủ" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="emailRegister" class="form-label fw-semibold mb-2">Email <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    <input type="email" class="form-control" id="emailRegister" name="email" placeholder="Địa chỉ Email" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="soDienThoaiRegister" class="form-label fw-semibold mb-2">Số điện thoại</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    <input type="text" class="form-control" id="soDienThoaiRegister" name="soDienThoai" placeholder="Số điện thoại (Tùy chọn)">
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success w-100 rounded-pill">
+                                <i class="fas fa-user-plus me-2"></i>Đăng ký
+                            </button>
+                        }
+                        
+                        <hr class="my-4">
+                        <div class="text-center">
+                            <p class="text-muted small mb-2">Đã có tài khoản?</p>
+                            <a href="#" class="modal-link" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                Đăng nhập ngay <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Bootstrap JS + jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     @Scripts.Render("~/bundles/jquery")
-    @RenderSection("scripts", required: false)
+    
+    <script>
+        // Xử lý form login trong modal
+        $(document).ready(function() {
+            // Login Modal
+            $('#loginModal').on('shown.bs.modal', function() {
+                $('#tenDangNhapModal').focus();
+            });
+
+            $('#loginModal').on('hidden.bs.modal', function() {
+                $('#loginFormModal')[0].reset();
+                $('#loginErrorAlert').addClass('d-none').find('span').text('');
+            });
+
+            $('#loginFormModal').on('submit', function(e) {
+                e.preventDefault();
+                
+                var form = $(this);
+                var formData = form.serialize();
+                var errorAlert = $('#loginErrorAlert');
+                var submitBtn = form.find('button[type="submit"]');
+                var originalText = submitBtn.html();
+                
+                errorAlert.addClass('d-none').find('span').text('');
+                submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...');
+                
+                $.ajax({
+                    url: '@Url.Action("Login", "Account")',
+                    type: 'POST',
+                    data: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response && response.success) {
+                            var loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+                            if (loginModal) loginModal.hide();
+                            window.location.reload();
+                        } else {
+                            errorAlert.removeClass('d-none').find('span').text(response.message || 'Đăng nhập thất bại!');
+                            submitBtn.prop('disabled', false).html(originalText);
+                        }
+                    },
+                    error: function(xhr) {
+                        var errorMessage = 'Tên đăng nhập hoặc mật khẩu không đúng!';
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            if (response && response.message) errorMessage = response.message;
+                        } catch (e) {}
+                        errorAlert.removeClass('d-none').find('span').text(errorMessage);
+                        submitBtn.prop('disabled', false).html(originalText);
+                    }
+                });
+            });
+
+            // Register Modal
+            $('#registerModal').on('shown.bs.modal', function() {
+                $('#tenDangNhapRegister').focus();
+            });
+
+            $('#registerModal').on('hidden.bs.modal', function() {
+                $('#registerFormModal')[0].reset();
+                $('#registerErrorAlert').addClass('d-none').find('span').text('');
+                $('#registerSuccessAlert').addClass('d-none').find('span').text('');
+            });
+
+            $('#registerFormModal').on('submit', function(e) {
+                e.preventDefault();
+                
+                var form = $(this);
+                var formData = form.serialize();
+                var errorAlert = $('#registerErrorAlert');
+                var successAlert = $('#registerSuccessAlert');
+                var submitBtn = form.find('button[type="submit"]');
+                var originalText = submitBtn.html();
+                
+                errorAlert.addClass('d-none').find('span').text('');
+                successAlert.addClass('d-none').find('span').text('');
+                submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...');
+                
+                $.ajax({
+                    url: '@Url.Action("Register", "Account")',
+                    type: 'POST',
+                    data: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response && response.success) {
+                            successAlert.removeClass('d-none').find('span').text(response.message || 'Đăng ký thành công! Vui lòng đăng nhập.');
+                            form[0].reset();
+                            // Tự động chuyển sang login modal sau 2 giây
+                            setTimeout(function() {
+                                var registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+                                if (registerModal) registerModal.hide();
+                                var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                                loginModal.show();
+                            }, 2000);
+                        } else {
+                            errorAlert.removeClass('d-none').find('span').text(response.message || 'Đăng ký thất bại!');
+                        }
+                        submitBtn.prop('disabled', false).html(originalText);
+                    },
+                    error: function(xhr) {
+                        var errorMessage = 'Đăng ký thất bại! Vui lòng thử lại.';
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            if (response && response.message) errorMessage = response.message;
+                        } catch (e) {}
+                        errorAlert.removeClass('d-none').find('span').text(errorMessage);
+                        submitBtn.prop('disabled', false).html(originalText);
+                    }
+                });
+            });
+        });
+    </script>
+    
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

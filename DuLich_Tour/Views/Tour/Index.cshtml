@@ -1,0 +1,163 @@
+@model List<DuLich_Tour.Models.TourDuLich>
+@{
+    ViewBag.Title = "Danh Sách Tour Du Lịch";
+}
+
+<div class="container py-5">
+    <!-- Header -->
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1 class="display-4 fw-bold text-primary mb-3">Danh Sách Tour Du Lịch</h1>
+            <p class="lead text-muted">Khám phá những hành trình tuyệt vời đang chờ đón bạn</p>
+        </div>
+    </div>
+
+    <!-- Filter và Search -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 rounded-4 p-4">
+                @using (Html.BeginForm("Index", "Tour", FormMethod.Get, new { @class = "row g-3" }))
+                {
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Tìm kiếm tour</label>
+                        <input type="text" name="search" class="form-control rounded-pill" 
+                               placeholder="Nhập tên tour hoặc mô tả..." 
+                               value="@ViewBag.SearchTerm">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Địa điểm</label>
+                        <select name="diaDiemId" class="form-select rounded-pill">
+                            <option value="">Tất cả địa điểm</option>
+                            @foreach (var diaDiem in (List<DuLich_Tour.Models.DiaDiemDuLich>)ViewBag.DiaDiems)
+                            {
+                                <option value="@diaDiem.IdDiaDiem" 
+                                        @(ViewBag.DiaDiemId != null && ViewBag.DiaDiemId == diaDiem.IdDiaDiem ? "selected" : "")>
+                                    @diaDiem.TenDiaDiem
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill">
+                            <i class="fas fa-search me-2"></i>Tìm kiếm
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Danh sách Tour -->
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="row">
+            @foreach (var tour in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden tour-card">
+                        <!-- Hình ảnh tour -->
+                        <div class="position-relative">
+                            <img src="@(string.IsNullOrEmpty(tour.HinhAnh) ? "https://via.placeholder.com/400x250?text=Tour+Image" : tour.HinhAnh)" 
+                                 class="card-img-top" 
+                                 alt="@tour.TenTour" 
+                                 style="height: 250px; object-fit: cover;">
+                            @if (tour.KhuyenMai != null)
+                            {
+                                <span class="badge bg-danger position-absolute top-0 end-0 m-3">
+                                    <i class="fas fa-tag me-1"></i>
+                                    @if (tour.KhuyenMai.KieuGiam == "phan_tram")
+                                    {
+                                        <text>Giảm @tour.KhuyenMai.GiaTri%</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Giảm @string.Format("{0:N0}₫", tour.KhuyenMai.GiaTri)</text>
+                                    }
+                                </span>
+                            }
+                            @if (tour.SoChoConLai <= 5 && tour.SoChoConLai > 0)
+                            {
+                                <span class="badge bg-warning position-absolute top-0 start-0 m-3">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>Sắp hết chỗ
+                                </span>
+                            }
+                        </div>
+
+                        <div class="card-body d-flex flex-column">
+                            <!-- Tiêu đề và Địa điểm -->
+                            <h5 class="card-title fw-bold text-primary mb-2">@tour.TenTour</h5>
+                            <p class="card-subtitle mb-3 text-muted">
+                                <i class="fas fa-map-marker-alt me-1 text-danger"></i>
+                                @(tour.DiaDiemDuLich?.TenDiaDiem ?? "Chưa xác định")
+                            </p>
+
+                            <!-- Mô tả -->
+                            <p class="card-text text-muted small mb-3" style="min-height: 60px;">
+                                @(string.IsNullOrEmpty(tour.MoTaNgan) ? "Khám phá hành trình tuyệt vời..." : tour.MoTaNgan)
+                            </p>
+
+                            <!-- Thông tin tour -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar-alt me-1"></i>
+                                        @if (tour.NgayBatDau.HasValue)
+                                        {
+                                            <text>@tour.NgayBatDau.Value.ToString("dd/MM/yyyy")</text>
+                                        }
+                                    </small>
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock me-1"></i>
+                                        @if (tour.NgayBatDau.HasValue && tour.NgayKetThuc.HasValue)
+                                        {
+                                            var days = (tour.NgayKetThuc.Value - tour.NgayBatDau.Value).Days;
+                                            <text>@days ngày @(days - 1) đêm</text>
+                                        }
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="mt-auto pt-3 border-top">
+                                <!-- Giá -->
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <span class="text-success fw-bold fs-4">
+                                            @string.Format("{0:N0}₫", tour.GiaNguoiLon)
+                                        </span>
+                                        <small class="text-muted d-block">Người lớn</small>
+                                    </div>
+                                    <span class="badge bg-info text-dark fs-6 px-3 py-2">
+                                        <i class="fas fa-users me-1"></i>
+                                        Còn: @tour.SoChoConLai/@tour.SoCho chỗ
+                                    </span>
+                                </div>
+
+                                <!-- Nút chi tiết -->
+                                <a href="@Url.Action("Details", "Tour", new { id = tour.IdTour })" 
+                                   class="btn btn-primary w-100 rounded-pill">
+                                    <i class="fas fa-info-circle me-2"></i>Xem chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">Không tìm thấy tour nào</h4>
+                    <p class="text-muted">Vui lòng thử lại với từ khóa hoặc bộ lọc khác</p>
+                    <a href="@Url.Action("Index", "Tour")" class="btn btn-primary rounded-pill mt-3">
+                        <i class="fas fa-redo me-2"></i>Xem tất cả tour
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

@@ -17,5 +17,12 @@ namespace DuLich_Tour
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
+
+        protected void Application_BeginRequest(object sender, EventArgs e)
+        {
+            // Đảm bảo encoding UTF-8 cho mọi request
+            Response.ContentEncoding = System.Text.Encoding.UTF8;
+            Response.Charset = "utf-8";
+        }
     }
 }

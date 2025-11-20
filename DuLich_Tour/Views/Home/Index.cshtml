@@ -3,79 +3,262 @@
     ViewBag.Title = "Trang Chủ - Khám Phá Tour Du Lịch Tuyệt Vời";
 }
 
-<main class="py-4">
-    <!-- Phần 1: Hero Section - Banner chính -->
-    <header class="p-5 text-center bg-primary text-white rounded-4 shadow-lg mb-5">
-        <h1 class="display-4 fw-bold mb-3">Tìm kiếm chuyến phiêu lưu tiếp theo của bạn</h1>
-        <p class="lead mb-4">Chúng tôi cung cấp những tour du lịch độc đáo và trải nghiệm đáng nhớ nhất.</p>
-        <p>
-            <a href="@Url.Action("Index", "Tour")" class="btn btn-warning btn-lg px-5 rounded-pill shadow">Khám phá tất cả Tours &raquo;</a>
-        </p>
-    </header>
+@section Styles {
+    <style>
+        /* Navbar transparent và position absolute cho trang Index */
+        body {
+            padding-top: 0 !important;
+            background-color: transparent !important;
+        }
 
-    <!-- Phần 2: Danh sách Tour Nổi Bật -->
-    <div class="row mb-5">
-        <div class="col-12 text-center mb-4">
-            <h2 class="fw-bold text-dark">🔥 Các Tour Du Lịch Nổi Bật</h2>
-            <p class="text-muted">Đừng bỏ lỡ những hành trình được yêu thích nhất của chúng tôi.</p>
+        #mainNavbar {
+            position: absolute !important;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: transparent !important;
+            box-shadow: none !important;
+            padding: 1rem 0;
+        }
+
+        #mainNavbar .navbar-brand,
+        #mainNavbar .navbar-nav .nav-link {
+            color: #fff !important;
+        }
+
+        #mainNavbar .navbar-nav .btn {
+            color: #fff !important;
+            border-color: rgba(255, 255, 255, 0.5) !important;
+        }
+
+        #mainNavbar .navbar-nav .btn-primary {
+            background-color: rgba(255, 255, 255, 0.2) !important;
+            border-color: rgba(255, 255, 255, 0.5) !important;
+        }
+
+        #mainNavbar .navbar-nav .btn:hover {
+            background-color: rgba(255, 255, 255, 0.3) !important;
+        }
+
+        #mainNavbar .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        #mainNavbar .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* Hero Section - Full width, break out of container, kéo dài toàn bộ trang */
+        .hero-section {
+            position: relative;
+            width: 100vw;
+            min-height: 100vh;
+            background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        body {
+            background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.5) 100%);
+            z-index: 1;
+        }
+
+        .hero-content-wrapper {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 8rem; /* Cách xa header */
+        }
+
+        .hero-content {
+            text-align: center;
+            color: #fff;
+            padding: 2rem;
+            max-width: 800px;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+            padding: 0 1rem;
+        }
+
+        .hero-btn {
+            background-color: #f8f9fa;
+            color: #212529;
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .hero-btn:hover {
+            background-color: #e9ecef;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            color: #212529;
+        }
+
+        /* Container cho phần nội dung bên dưới - ẩn nếu không có tour */
+        .content-section {
+            margin-top: 0;
+            position: relative;
+            z-index: 3;
+            background-color: transparent;
+        }
+
+        /* Nếu có tour, hiển thị với background trong suốt trên hero */
+        .content-section .container {
+            background-color: transparent;
+        }
+
+        /* Override container margin cho trang Index */
+        #mainContent {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* Đảm bảo body không có margin/padding tạo khoảng trắng */
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Footer hòa nhập hoàn toàn với hero section */
+        .footer-tour {
+            position: relative;
+            z-index: 100;
+            background: rgba(26, 26, 26, 0.85) !important;
+            backdrop-filter: blur(15px);
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            width: 100vw;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+        }
+
+        /* Đảm bảo không có khoảng trắng giữa các phần */
+        .hero-section + *,
+        .content-section + * {
+            margin-top: 0 !important;
+        }
+
+        /* Responsive cho mobile */
+        @*@media (max-width: 768px) {
+            .hero-content {
+                padding-top: 6rem;
+            }
+
+            .hero-description {
+                font-size: 1rem;
+            }
+
+            .hero-btn {
+                padding: 0.8rem 2rem;
+                font-size: 0.9rem;
+            }
+        }*@
+    </style>
+}
+
+<!-- Hero Section - Bao gồm cả footer -->
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    
+    <!-- Nội dung hero chính -->
+    <div class="hero-content-wrapper">
+        <div class="hero-content">
+            <p class="hero-description">
+                Khám phá những điểm đến tuyệt vời và trải nghiệm những hành trình đáng nhớ. 
+                Chúng tôi mang đến cho bạn những tour du lịch độc đáo với dịch vụ chất lượng cao 
+                và giá cả hợp lý nhất.
+            </p>
+            <a href="@Url.Action("Index", "Tour")" class="hero-btn">Khám Phá Ngay</a>
         </div>
+    </div>
 
-        @if (Model != null && Model.Count > 0)
-        {
-            foreach (var tour in Model)
-            {
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden tour-card">
-                        <!-- Hình ảnh tour -->
-                        <img src="@tour.HinhAnh" class="card-img-top" alt="@tour.TenTour" style="height: 200px; object-fit: cover;">
+    <!-- Danh sách Tour (nếu có) - nằm trong hero section -->
+    @if (Model != null && Model.Count > 0)
+    {
+        <main class="content-section py-5">
+            <div class="container">
+                <div class="row">
+                @foreach (var tour in Model)
+                {
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 border-0 shadow-lg rounded-3 overflow-hidden tour-card" style="background-color: rgba(255, 255, 255, 0.95);">
+                            <!-- Hình ảnh tour -->
+                            <img src="@tour.HinhAnh" class="card-img-top" alt="@tour.TenTour" style="height: 200px; object-fit: cover;">
 
-                        <div class="card-body d-flex flex-column">
-                            <!-- Tiêu đề và Địa điểm -->
-                            <h5 class="card-title fw-semibold text-primary">@tour.TenTour</h5>
-                            <p class="card-subtitle mb-2 text-muted small">
-                                <i class="fas fa-map-marker-alt me-1"></i>
-                                @(tour.DiaDiemDuLich?.TenDiaDiem ?? "Chưa xác định")
-                            </p>
+                            <div class="card-body d-flex flex-column">
+                                <!-- Tiêu đề và Địa điểm -->
+                                <h5 class="card-title fw-semibold text-primary">@tour.TenTour</h5>
+                                <p class="card-subtitle mb-2 text-muted small">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    @(tour.DiaDiemDuLich?.TenDiaDiem ?? "Chưa xác định")
+                                </p>
 
-                            <!-- Mô tả và Chi tiết -->
-                            <p class="card-text small text-truncate-3">@tour.MoTaNgan</p>
+                                <!-- Mô tả và Chi tiết -->
+                                <p class="card-text small text-truncate-3">@tour.MoTaNgan</p>
 
-                            <div class="mt-auto pt-3 border-top">
-                                <!-- Giá -->
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="text-success fw-bold fs-5">
-                                        @string.Format("{0:N0}₫", tour.GiaNguoiLon)
-                                    </span>
-                                    <span class="badge bg-info text-dark">
-                                        Còn: @tour.SoChoConLai/@tour.SoCho chỗ
-                                    </span>
+                                <div class="mt-auto pt-3 border-top">
+                                    <!-- Giá -->
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="text-success fw-bold fs-5">
+                                            @string.Format("{0:N0}₫", tour.GiaNguoiLon)
+                                        </span>
+                                        <span class="badge bg-info text-dark">
+                                            Còn: @tour.SoChoConLai/@tour.SoCho chỗ
+                                        </span>
+                                    </div>
+
+                                    <!-- Nút chi tiết -->
+                                    <a href="@Url.Action("Details", "Tour", new { id = tour.IdTour })" class="btn btn-outline-primary w-100 rounded-pill">Xem chi tiết &raquo;</a>
                                 </div>
-
-                                <!-- Nút chi tiết -->
-                                <a href="@Url.Action("Details", "Tour", new { id = tour.IdTour })" class="btn btn-outline-primary w-100 rounded-pill">Xem chi tiết &raquo;</a>
                             </div>
                         </div>
                     </div>
+                }
                 </div>
-            }
-        }
-        else
-        {
-            <div class="col-12 text-center py-5">
-                <p class="lead text-muted">Không tìm thấy tour du lịch nào đang mở bán.</p>
-                <a href="@Url.Action("Index", "Tour")" class="btn btn-secondary rounded-pill">Thử tìm kiếm Tours khác</a>
             </div>
-        }
-    </div>
-
-    <!-- Phần 3: Call to Action (CTA) -->
-    <div class="row">
-        <div class="col-12">
-            <div class="p-4 text-center bg-light border rounded-3">
-                <h3 class="fw-bold mb-3">Bạn cần tư vấn?</h3>
-                <p class="mb-4">Liên hệ với đội ngũ chuyên gia du lịch của chúng tôi để được hỗ trợ tốt nhất!</p>
-                <a href="@Url.Action("Contact", "Home")" class="btn btn-success rounded-pill px-4 shadow-sm"><i class="fas fa-headset me-2"></i> Liên hệ ngay</a>
-            </div>
-        </div>
-    </div>
-</main>
+        </main>
+    }
+</section>
