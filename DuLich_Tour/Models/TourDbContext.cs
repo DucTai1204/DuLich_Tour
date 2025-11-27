@@ -6,6 +6,11 @@ namespace DuLich_Tour.Models
     {
         public TourDbContext() : base("name=TourDbContext")
         {
+            // Tối ưu cho concurrent access
+            this.Configuration.LazyLoadingEnabled = false;
+            this.Configuration.ProxyCreationEnabled = false;
+            this.Configuration.AutoDetectChangesEnabled = true;
+            this.Database.CommandTimeout = 60; // Tăng timeout để tránh timeout khi có nhiều kết nối
         }
 
         public DbSet<TaiKhoan> TaiKhoans { get; set; }

@@ -1,6 +1,9 @@
 ﻿using DuLich_Tour.Models;
 using DuLich_Tour.Attributes;
 using System;
+using System.Data;
+using System.Data.Entity.Core;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -38,50 +41,86 @@ namespace DuLich_Tour.Controllers
 
             if (ModelState.IsValid)
             {
-                using (var db = new TourDbContext()) // Đảm bảo Dispose
+                try
                 {
-                    // 1. Kiểm tra username/email đã tồn tại
-                    if (db.TaiKhoans.Any(t => t.TenDangNhap == tenDangNhap))
+                    using (var db = new TourDbContext()) // Đảm bảo Dispose
                     {
-                        ModelState.AddModelError("", "Tên đăng nhập đã tồn tại!");
-                        return View();
+                        // Tăng timeout cho command
+                        db.Database.CommandTimeout = 60;
+
+                        // 1. Kiểm tra username/email đã tồn tại
+                        if (db.TaiKhoans.Any(t => t.TenDangNhap == tenDangNhap))
+                        {
+                            ModelState.AddModelError("", "Tên đăng nhập đã tồn tại!");
+                            return View();
+                        }
+                        if (db.KhachHangs.Any(k => k.Email == email))
+                        {
+                            ModelState.AddModelError("", "Email đã được đăng ký!");
+                            return View();
+                        }
+
+                        // 2. Hash mật khẩu (Lưu ý: Nên dùng PBKDF2/BCrypt thay vì MD5)
+                        string hashedPassword = HashPassword(matKhau);
+
+                        // 3. Tạo TaiKhoan
+                        TaiKhoan tk = new TaiKhoan
+                        {
+                            TenDangNhap = tenDangNhap,
+                            MatKhau = hashedPassword,
+                            VaiTro = "khach_hang",
+                            TrangThai = true,
+                            NgayTao = DateTime.Now
+                        };
+                        db.TaiKhoans.Add(tk);
+                        db.SaveChanges(); // Lưu để có IdTaiKhoan
+
+                        // 4. Tạo KhachHang
+                        KhachHang kh = new KhachHang
+                        {
+                            IdTaiKhoan = tk.IdTaiKhoan, // Lấy ID sau khi SaveChanges()
+                            HoTen = hoTen,
+                            Email = email,
+                            SoDienThoai = soDienThoai,
+                            NgayDangKy = DateTime.Now
+                        };
+                        db.KhachHangs.Add(kh);
+                        db.SaveChanges();
                     }
-                    if (db.KhachHangs.Any(k => k.Email == email))
-                    {
-                        ModelState.AddModelError("", "Email đã được đăng ký!");
-                        return View();
-                    }
 
-                    // 2. Hash mật khẩu (Lưu ý: Nên dùng PBKDF2/BCrypt thay vì MD5)
-                    string hashedPassword = HashPassword(matKhau);
-
-                    // 3. Tạo TaiKhoan
-                    TaiKhoan tk = new TaiKhoan
-                    {
-                        TenDangNhap = tenDangNhap,
-                        MatKhau = hashedPassword,
-                        VaiTro = "khach_hang",
-                        TrangThai = true,
-                        NgayTao = DateTime.Now
-                    };
-                    db.TaiKhoans.Add(tk);
-                    db.SaveChanges(); // Lưu để có IdTaiKhoan
-
-                    // 4. Tạo KhachHang
-                    KhachHang kh = new KhachHang
-                    {
-                        IdTaiKhoan = tk.IdTaiKhoan, // Lấy ID sau khi SaveChanges()
-                        HoTen = hoTen,
-                        Email = email,
-                        SoDienThoai = soDienThoai,
-                        NgayDangKy = DateTime.Now
-                    };
-                    db.KhachHangs.Add(kh);
-                    db.SaveChanges();
+                    TempData["Success"] = "Đăng ký thành công! Vui lòng đăng nhập.";
+                    return RedirectToAction("Login");
                 }
-
-                TempData["Success"] = "Đăng ký thành công! Vui lòng đăng nhập.";
-                return RedirectToAction("Login");
+                catch (SqlException sqlEx)
+                {
+                    if (sqlEx.Number == 2627 || sqlEx.Number == 2601) // Duplicate key
+                    {
+                        ModelState.AddModelError("", "Tên đăng nhập hoặc email đã tồn tại!");
+                    }
+                    else if (sqlEx.Number == -2 || sqlEx.Number == 2) // Timeout
+                    {
+                        ModelState.AddModelError("", "Kết nối cơ sở dữ liệu bị timeout. Vui lòng thử lại sau vài giây.");
+                    }
+                    else if (sqlEx.Number == 1205) // Deadlock
+                    {
+                        ModelState.AddModelError("", "Hệ thống đang bận. Vui lòng thử lại sau vài giây.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại sau.");
+                    }
+                    return View();
+                }
+                catch (EntityException entityEx)
+                {
+                    ModelState.AddModelError("", "Lỗi kết nối cơ sở dữ liệu. Vui lòng thử lại sau.");
+                    return View();
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau.");
+                    return View();
+                }
             }
             return View();
         }
@@ -94,47 +133,78 @@ namespace DuLich_Tour.Controllers
                 return Json(new { success = false, message = "Vui lòng điền đầy đủ thông tin bắt buộc!" }, JsonRequestBehavior.AllowGet);
             }
 
-            using (var db = new TourDbContext())
+            try
             {
-                // 1. Kiểm tra username/email đã tồn tại
-                if (db.TaiKhoans.Any(t => t.TenDangNhap == tenDangNhap))
+                using (var db = new TourDbContext())
                 {
-                    return Json(new { success = false, message = "Tên đăng nhập đã tồn tại!" }, JsonRequestBehavior.AllowGet);
+                    // Tăng timeout cho command
+                    db.Database.CommandTimeout = 60;
+
+                    // 1. Kiểm tra username/email đã tồn tại
+                    if (db.TaiKhoans.Any(t => t.TenDangNhap == tenDangNhap))
+                    {
+                        return Json(new { success = false, message = "Tên đăng nhập đã tồn tại!" }, JsonRequestBehavior.AllowGet);
+                    }
+                    if (db.KhachHangs.Any(k => k.Email == email))
+                    {
+                        return Json(new { success = false, message = "Email đã được đăng ký!" }, JsonRequestBehavior.AllowGet);
+                    }
+
+                    // 2. Hash mật khẩu
+                    string hashedPassword = HashPassword(matKhau);
+
+                    // 3. Tạo TaiKhoan
+                    TaiKhoan tk = new TaiKhoan
+                    {
+                        TenDangNhap = tenDangNhap,
+                        MatKhau = hashedPassword,
+                        VaiTro = "khach_hang",
+                        TrangThai = true,
+                        NgayTao = DateTime.Now
+                    };
+                    db.TaiKhoans.Add(tk);
+                    db.SaveChanges();
+
+                    // 4. Tạo KhachHang
+                    KhachHang kh = new KhachHang
+                    {
+                        IdTaiKhoan = tk.IdTaiKhoan,
+                        HoTen = hoTen,
+                        Email = email,
+                        SoDienThoai = soDienThoai ?? "",
+                        NgayDangKy = DateTime.Now
+                    };
+                    db.KhachHangs.Add(kh);
+                    db.SaveChanges();
                 }
-                if (db.KhachHangs.Any(k => k.Email == email))
-                {
-                    return Json(new { success = false, message = "Email đã được đăng ký!" }, JsonRequestBehavior.AllowGet);
-                }
 
-                // 2. Hash mật khẩu
-                string hashedPassword = HashPassword(matKhau);
-
-                // 3. Tạo TaiKhoan
-                TaiKhoan tk = new TaiKhoan
-                {
-                    TenDangNhap = tenDangNhap,
-                    MatKhau = hashedPassword,
-                    VaiTro = "khach_hang",
-                    TrangThai = true,
-                    NgayTao = DateTime.Now
-                };
-                db.TaiKhoans.Add(tk);
-                db.SaveChanges();
-
-                // 4. Tạo KhachHang
-                KhachHang kh = new KhachHang
-                {
-                    IdTaiKhoan = tk.IdTaiKhoan,
-                    HoTen = hoTen,
-                    Email = email,
-                    SoDienThoai = soDienThoai ?? "",
-                    NgayDangKy = DateTime.Now
-                };
-                db.KhachHangs.Add(kh);
-                db.SaveChanges();
+                return Json(new { success = true, message = "Đăng ký thành công! Vui lòng đăng nhập." }, JsonRequestBehavior.AllowGet);
             }
-
-            return Json(new { success = true, message = "Đăng ký thành công! Vui lòng đăng nhập." }, JsonRequestBehavior.AllowGet);
+            catch (SqlException sqlEx)
+            {
+                string errorMessage = "Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại sau.";
+                if (sqlEx.Number == 2627 || sqlEx.Number == 2601) // Duplicate key
+                {
+                    errorMessage = "Tên đăng nhập hoặc email đã tồn tại!";
+                }
+                else if (sqlEx.Number == -2 || sqlEx.Number == 2) // Timeout
+                {
+                    errorMessage = "Kết nối cơ sở dữ liệu bị timeout. Vui lòng thử lại sau vài giây.";
+                }
+                else if (sqlEx.Number == 1205) // Deadlock
+                {
+                    errorMessage = "Hệ thống đang bận. Vui lòng thử lại sau vài giây.";
+                }
+                return Json(new { success = false, message = errorMessage }, JsonRequestBehavior.AllowGet);
+            }
+            catch (EntityException entityEx)
+            {
+                return Json(new { success = false, message = "Lỗi kết nối cơ sở dữ liệu. Vui lòng thử lại sau." }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau." }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         // GET: /Account/Login
@@ -160,78 +230,147 @@ namespace DuLich_Tour.Controllers
                 return LoginAjax(tenDangNhap, matKhau);
             }
 
-            // 1. Hash mật khẩu và tìm kiếm
-            string hashedPassword = HashPassword(matKhau);
-
-            using (var db = new TourDbContext())
+            try
             {
-                var user = db.TaiKhoans.FirstOrDefault(t => t.TenDangNhap == tenDangNhap && t.MatKhau == hashedPassword);
+                // 1. Hash mật khẩu và tìm kiếm
+                string hashedPassword = HashPassword(matKhau);
 
-                if (user != null)
+                using (var db = new TourDbContext())
                 {
-                    // 2. Kiểm tra trạng thái
-                    if (!user.TrangThai)
+                    // Tăng timeout cho command để tránh timeout khi có nhiều kết nối
+                    db.Database.CommandTimeout = 60;
+
+                    var user = db.TaiKhoans.FirstOrDefault(t => t.TenDangNhap == tenDangNhap && t.MatKhau == hashedPassword);
+
+                    if (user != null)
                     {
-                        ModelState.AddModelError("", "Tài khoản của bạn đã bị khóa.");
-                        return View();
+                        // 2. Kiểm tra trạng thái
+                        if (!user.TrangThai)
+                        {
+                            ModelState.AddModelError("", "Tài khoản của bạn đã bị khóa.");
+                            return View();
+                        }
+
+                        // 3. Thiết lập Session
+                        Session["IdTaiKhoan"] = user.IdTaiKhoan;
+                        Session["TenDangNhap"] = user.TenDangNhap;
+                        Session["VaiTro"] = user.VaiTro;
+
+                        // 4. Cập nhật lần đăng nhập cuối
+                        user.LanDangNhapCuoi = DateTime.Now;
+                        db.SaveChanges();
+
+                        return RedirectToAction("Index", "Tour"); // chuyển đến trang tour
                     }
+                } // db.Dispose() được gọi tự động ở đây
 
-                    // 3. Thiết lập Session
-                    Session["IdTaiKhoan"] = user.IdTaiKhoan;
-                    Session["TenDangNhap"] = user.TenDangNhap;
-                    Session["VaiTro"] = user.VaiTro;
-
-                    // 4. Cập nhật lần đăng nhập cuối
-                    user.LanDangNhapCuoi = DateTime.Now;
-                    db.SaveChanges();
-
-                    return RedirectToAction("Index", "Tour"); // chuyển đến trang tour
+                ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng!");
+                return View();
+            }
+            catch (SqlException sqlEx)
+            {
+                // Xử lý các lỗi SQL cụ thể
+                if (sqlEx.Number == -2 || sqlEx.Number == 2) // Timeout
+                {
+                    ModelState.AddModelError("", "Kết nối cơ sở dữ liệu bị timeout. Vui lòng thử lại sau vài giây.");
                 }
-            } // db.Dispose() được gọi tự động ở đây
-
-            ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng!");
-            return View();
+                else if (sqlEx.Number == 1205) // Deadlock
+                {
+                    ModelState.AddModelError("", "Hệ thống đang bận. Vui lòng thử lại sau vài giây.");
+                }
+                else if (sqlEx.Number == 53 || sqlEx.Number == 2) // Connection failure
+                {
+                    ModelState.AddModelError("", "Không thể kết nối đến cơ sở dữ liệu. Vui lòng thử lại sau.");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại sau.");
+                }
+                return View();
+            }
+            catch (EntityException entityEx)
+            {
+                ModelState.AddModelError("", "Lỗi kết nối cơ sở dữ liệu. Vui lòng thử lại sau.");
+                return View();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau.");
+                return View();
+            }
         }
 
         // Xử lý login qua AJAX
         private ActionResult LoginAjax(string tenDangNhap, string matKhau)
         {
-            // 1. Hash mật khẩu và tìm kiếm
-            string hashedPassword = HashPassword(matKhau);
-
-            using (var db = new TourDbContext())
+            try
             {
-                var user = db.TaiKhoans.FirstOrDefault(t => t.TenDangNhap == tenDangNhap && t.MatKhau == hashedPassword);
+                // 1. Hash mật khẩu và tìm kiếm
+                string hashedPassword = HashPassword(matKhau);
 
-                if (user != null)
+                using (var db = new TourDbContext())
                 {
-                    // 2. Kiểm tra trạng thái
-                    if (!user.TrangThai)
+                    // Tăng timeout cho command để tránh timeout khi có nhiều kết nối
+                    db.Database.CommandTimeout = 60;
+
+                    var user = db.TaiKhoans.FirstOrDefault(t => t.TenDangNhap == tenDangNhap && t.MatKhau == hashedPassword);
+
+                    if (user != null)
                     {
-                        return Json(new { success = false, message = "Tài khoản của bạn đã bị khóa." }, JsonRequestBehavior.AllowGet);
+                        // 2. Kiểm tra trạng thái
+                        if (!user.TrangThai)
+                        {
+                            return Json(new { success = false, message = "Tài khoản của bạn đã bị khóa." }, JsonRequestBehavior.AllowGet);
+                        }
+
+                        // 3. Thiết lập Session
+                        Session["IdTaiKhoan"] = user.IdTaiKhoan;
+                        Session["TenDangNhap"] = user.TenDangNhap;
+                        Session["VaiTro"] = user.VaiTro;
+
+                        // Lấy IdKhachHang nếu có
+                        var khachHang = db.KhachHangs.FirstOrDefault(k => k.IdTaiKhoan == user.IdTaiKhoan);
+                        if (khachHang != null)
+                        {
+                            Session["IdKhachHang"] = khachHang.IdKhachHang;
+                        }
+
+                        // 4. Cập nhật lần đăng nhập cuối
+                        user.LanDangNhapCuoi = DateTime.Now;
+                        db.SaveChanges();
+
+                        return Json(new { success = true, message = "Đăng nhập thành công!" }, JsonRequestBehavior.AllowGet);
                     }
-
-                    // 3. Thiết lập Session
-                    Session["IdTaiKhoan"] = user.IdTaiKhoan;
-                    Session["TenDangNhap"] = user.TenDangNhap;
-                    Session["VaiTro"] = user.VaiTro;
-
-                    // Lấy IdKhachHang nếu có
-                    var khachHang = db.KhachHangs.FirstOrDefault(k => k.IdTaiKhoan == user.IdTaiKhoan);
-                    if (khachHang != null)
-                    {
-                        Session["IdKhachHang"] = khachHang.IdKhachHang;
-                    }
-
-                    // 4. Cập nhật lần đăng nhập cuối
-                    user.LanDangNhapCuoi = DateTime.Now;
-                    db.SaveChanges();
-
-                    return Json(new { success = true, message = "Đăng nhập thành công!" }, JsonRequestBehavior.AllowGet);
                 }
-            }
 
-            return Json(new { success = false, message = "Tên đăng nhập hoặc mật khẩu không đúng!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = "Tên đăng nhập hoặc mật khẩu không đúng!" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (SqlException sqlEx)
+            {
+                // Xử lý các lỗi SQL cụ thể
+                string errorMessage = "Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại sau.";
+                if (sqlEx.Number == -2 || sqlEx.Number == 2) // Timeout
+                {
+                    errorMessage = "Kết nối cơ sở dữ liệu bị timeout. Vui lòng thử lại sau vài giây.";
+                }
+                else if (sqlEx.Number == 1205) // Deadlock
+                {
+                    errorMessage = "Hệ thống đang bận. Vui lòng thử lại sau vài giây.";
+                }
+                else if (sqlEx.Number == 53 || sqlEx.Number == 2) // Connection failure
+                {
+                    errorMessage = "Không thể kết nối đến cơ sở dữ liệu. Vui lòng thử lại sau.";
+                }
+                return Json(new { success = false, message = errorMessage }, JsonRequestBehavior.AllowGet);
+            }
+            catch (EntityException entityEx)
+            {
+                return Json(new { success = false, message = "Lỗi kết nối cơ sở dữ liệu. Vui lòng thử lại sau." }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau." }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         /// <summary>
