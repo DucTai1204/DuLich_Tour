@@ -18,3 +18,8 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/* Hide validation summary when there are no errors */
+.validation-summary-valid {
+    display: none !important;
+}

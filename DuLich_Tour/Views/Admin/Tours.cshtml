@@ -37,7 +37,25 @@
         <tbody>
         @foreach (var item in Model)
         {
-            var statusClass = item.TrangThai == "mo-ban" ? "success" : "secondary";
+            string statusClass = "secondary";
+            string statusLabel = item.TrangThai;
+
+            if (item.TrangThai == "mo-ban")
+            {
+                statusClass = "success";
+                statusLabel = "Mở bán";
+            }
+            else if (item.TrangThai == "ngung-hoat-dong")
+            {
+                statusClass = "danger";
+                statusLabel = "Ngừng hoạt động";
+            }
+            else if (item.TrangThai == "tam-dung")
+            {
+                statusClass = "warning text-dark";
+                statusLabel = "Tạm dừng";
+            }
+
             <tr>
                 <td class="fw-semibold">#@item.IdTour</td>
                 <td>
@@ -55,7 +73,7 @@
                 </td>
                 <td class="fw-semibold text-primary">@item.GiaNguoiLon.ToString("N0") đ</td>
                 <td>
-                    <span class="badge bg-@statusClass text-capitalize px-3 py-2">@item.TrangThai</span>
+                    <span class="badge bg-@statusClass px-3 py-2">@statusLabel</span>
                 </td>
                 <td class="text-end">
                     <a href="@Url.Action("EditTour", new { id = item.IdTour })" class="btn btn-outline-secondary btn-sm rounded-pill me-2">

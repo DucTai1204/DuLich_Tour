@@ -55,16 +55,20 @@
                         <h6 class="text-muted text-uppercase small">Trạng thái</h6>
                         @{
                             var statusClass = "bg-warning text-dark";
+                            var statusLabel = "Chờ xác nhận";
+
                             if (Model.TrangThai == "da-xac-nhan")
                             {
                                 statusClass = "bg-success";
+                                statusLabel = "Đã xác nhận";
                             }
                             else if (Model.TrangThai == "da-huy")
                             {
                                 statusClass = "bg-danger";
+                                statusLabel = "Đã hủy";
                             }
                         }
-                        <span class="badge @statusClass text-capitalize px-3 py-2">@Model.TrangThai</span>
+                        <span class="badge @statusClass text-capitalize px-3 py-2">@statusLabel</span>
                     </div>
                 </div>
 

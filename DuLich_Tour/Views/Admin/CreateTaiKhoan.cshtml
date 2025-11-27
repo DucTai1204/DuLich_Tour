@@ -1,64 +1,77 @@
+@model DuLich_Tour.Models.TaiKhoan
+
 @{
     ViewBag.Title = "Thêm tài khoản";
 }
 
 @section PageActions{
-    @Html.ActionLink("Danh sách tài khoản", "TaiKhoans", null, new { @class = "btn btn-outline-secondary rounded-pill" })
+    <a href="@Url.Action("TaiKhoans", "Admin")" class="btn btn-light text-secondary rounded-pill fw-semibold">
+        <i class="fa-solid fa-arrow-left me-2"></i>Quay lại danh sách
+    </a>
 }
 
-<div class="card shadow-sm border-0 form-card">
-    <div class="card-body p-4 p-lg-5">
-        <h2 class="fw-bold mb-4">Tài khoản quản trị / khách</h2>
-        @using (Html.BeginForm())
-        {
-            @Html.AntiForgeryToken()
-            @Html.ValidationSummary(false, "", new { @class = "alert alert-danger rounded-3" })
-
-            <div class="row g-4">
-                <div class="col-lg-7">
-                    <div class="card border-0 shadow-sm p-4">
-                        <div class="mb-3">
-                            @Html.LabelFor(m => m.TenDangNhap, "Tên đăng nhập", new { @class = "form-label" })
-                            @Html.TextBoxFor(m => m.TenDangNhap, new { @class = "form-control form-control-lg", placeholder = "Tên đăng nhập" })
-                            @Html.ValidationMessageFor(m => m.TenDangNhap, "", new { @class = "text-danger" })
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Mật khẩu</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
-                                <input type="password" name="matKhauPlain" class="form-control" placeholder="Nhập mật khẩu" />
-                            </div>
-                            <small class="text-muted">Mật khẩu sẽ được hash trước khi lưu.</small>
-                            @Html.ValidationMessage("matKhauPlain", "", new { @class = "text-danger" })
-                        </div>
-                        <div class="mb-3">
-                            @Html.LabelFor(m => m.VaiTro, "Vai trò", new { @class = "form-label" })
-                            @Html.DropDownListFor(m => m.VaiTro, new SelectList(new[] {
-                                new { Value = "admin", Text = "Quản trị viên" },
-                                new { Value = "nhan_vien", Text = "Nhân viên" },
-                                new { Value = "khach_hang", Text = "Khách hàng" }
-                            }, "Value", "Text", Model?.VaiTro), "-- Chọn vai trò --", new { @class = "form-select" })
-                        </div>
-                        <div class="form-check form-switch">
-                            @Html.CheckBoxFor(m => m.TrangThai, new { @class = "form-check-input", role = "switch", id = "TrangThai" })
-                            <label class="form-check-label" for="TrangThai">Hoạt động</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-5">
-                    <div class="card border-0 shadow-sm p-4 h-100">
-                        <p class="text-muted small mb-4">Bạn có thể gán tài khoản này cho khách hàng trong mục khách hàng.</p>
-                        <button type="submit" class="btn btn-primary w-100 mb-2">
-                            <i class="fa-solid fa-user-shield me-2"></i>Tạo tài khoản
-                        </button>
-                        @Html.ActionLink("Hủy bỏ", "TaiKhoans", null, new { @class = "btn btn-outline-secondary w-100" })
-                    </div>
-                </div>
+<div class="row justify-content-center">
+    <div class="col-xl-8 col-lg-10">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-header bg-white border-bottom py-4 px-5">
+                <h4 class="mb-0 fw-bold text-dark">Tạo tài khoản mới</h4>
+                <p class="text-muted small mb-0 mt-1">Cấp quyền truy cập hệ thống cho nhân viên hoặc khách hàng.</p>
             </div>
-        }
+            <div class="card-body p-5">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger rounded-3 mb-4" })
+
+                    <div class="row g-4">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                @Html.LabelFor(m => m.TenDangNhap, "Tên đăng nhập", new { @class = "form-label fw-semibold" })
+                                @Html.TextBoxFor(m => m.TenDangNhap, new { @class = "form-control form-control-lg bg-light border-0", placeholder = "username" })
+                                @Html.ValidationMessageFor(m => m.TenDangNhap, "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Mật khẩu</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0"><i class="fa-solid fa-lock"></i></span>
+                                    <input type="password" name="matKhauPlain" class="form-control bg-light border-0" placeholder="Nhập mật khẩu an toàn" />
+                                </div>
+                                <div class="form-text">Mật khẩu sẽ được mã hóa an toàn.</div>
+                                @Html.ValidationMessage("matKhauPlain", "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                @Html.LabelFor(m => m.VaiTro, "Vai trò hệ thống", new { @class = "form-label fw-semibold" })
+                                @Html.DropDownListFor(m => m.VaiTro, new SelectList(new[] {
+                                    new { Value = "admin", Text = "Quản trị viên (Admin)" },
+                                    new { Value = "nhan_vien", Text = "Nhân viên (Staff)" },
+                                    new { Value = "khach_hang", Text = "Khách hàng (Customer)" }
+                                }, "Value", "Text", Model?.VaiTro), "-- Chọn vai trò --", new { @class = "form-select bg-light border-0" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-check form-switch mt-2">
+                                @Html.CheckBoxFor(m => m.TrangThai, new { @class = "form-check-input", id = "TrangThai", @checked = "checked" })
+                                <label class="form-check-label fw-semibold" for="TrangThai">Kích hoạt tài khoản ngay</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mt-4">
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-dark btn-lg rounded-pill fw-bold shadow-sm">
+                                    <i class="fa-solid fa-user-plus me-2"></i>Tạo tài khoản
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
     </div>
 </div>
-@model DuLich_Tour.Models.TaiKhoan
-
-
-

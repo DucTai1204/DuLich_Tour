@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web.Mvc;
 using System.Data.Entity.Validation;
+using System.Collections.Generic;
 
 namespace DuLich_Tour.Controllers
 {
@@ -53,8 +54,8 @@ namespace DuLich_Tour.Controllers
                 .OrderByDescending(k => k.NgayBatDau)
                 .ToList();
 
-            ViewBag.IdDiaDiem = new SelectList(diaDiems, "IdDiaDiem", "TenDiaDiem", selectedDiaDiem);
-            ViewBag.IdKhuyenMai = new SelectList(khuyenMais, "IdKhuyenMai", "TenChuongTrinh", selectedKhuyenMai);
+            ViewBag.DiaDiemList = new SelectList(diaDiems, "IdDiaDiem", "TenDiaDiem", selectedDiaDiem);
+            ViewBag.KhuyenMaiList = new SelectList(khuyenMais, "IdKhuyenMai", "TenChuongTrinh", selectedKhuyenMai);
         }
 
         private void ValidateTourRules(TourDuLich model)
@@ -144,13 +145,62 @@ namespace DuLich_Tour.Controllers
             var forbid = ForbidIfNotAdmin();
             if (forbid != null) return forbid;
 
-            ViewBag.TourCount = _context.TourDuLiches.Count();
-            ViewBag.DiaDiemCount = _context.DiaDiemDuLiches.Count();
-            ViewBag.KhachHangCount = _context.KhachHangs.Count();
-            ViewBag.KhuyenMaiCount = _context.KhuyenMais.Count();
-            ViewBag.TaiKhoanCount = _context.TaiKhoans.Count();
+            // 1. Thống kê cơ bản
+            var totalTours = _context.TourDuLiches.Count();
+            var totalCustomers = _context.KhachHangs.Count();
+            var totalBookings = _context.DatTours.Count();
+            
+            // Tính doanh thu: chỉ tính các đơn đã xác nhận hoặc hoàn thành (nếu có)
+            // Ở đây tạm tính các đơn "da-xac-nhan"
+            var paidBookings = _context.DatTours
+                .Where(d => d.TrangThai == "da-xac-nhan")
+                .ToList();
+            
+            decimal totalRevenue = paidBookings.Sum(d => d.TongTien);
 
-            return View();
+            // 2. Đơn đặt tour gần đây (lấy 5 đơn mới nhất)
+            var recentBookings = _context.DatTours
+                .Include(d => d.KhachHang)
+                .Include(d => d.TourDuLich)
+                .OrderByDescending(d => d.NgayDat)
+                .Take(5)
+                .ToList();
+
+            // 3. Biểu đồ doanh thu 6 tháng gần nhất
+            var labels = new List<string>();
+            var revenueData = new List<decimal>();
+
+            var today = DateTime.Today;
+            for (int i = 5; i >= 0; i--)
+            {
+                var month = today.AddMonths(-i);
+                var startOfMonth = new DateTime(month.Year, month.Month, 1);
+                var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+                var monthlyRevenue = _context.DatTours
+                    .Where(d => d.TrangThai == "da-xac-nhan" && 
+                                d.NgayDat >= startOfMonth && 
+                                d.NgayDat <= endOfMonth)
+                    .ToList() // Client evaluation might be needed if EF version is old, but usually Sum works. 
+                              // Safe to ToList first for small datasets or ensure LINQ compatibility.
+                    .Sum(d => d.TongTien);
+                
+                labels.Add(month.ToString("MM/yyyy"));
+                revenueData.Add(monthlyRevenue);
+            }
+
+            var model = new AdminDashboardViewModel
+            {
+                TotalTours = totalTours,
+                TotalCustomers = totalCustomers,
+                TotalBookings = totalBookings,
+                TotalRevenue = totalRevenue,
+                RecentBookings = recentBookings,
+                RevenueLabels = labels,
+                MonthlyRevenue = revenueData
+            };
+
+            return View(model);
         }
 
         #region TourDuLich

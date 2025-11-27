@@ -140,6 +140,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\DanhGiaTour.cs" />
+    <Compile Include="Models\AdminViewModels.cs" />
     <Compile Include="Models\DatTour.cs" />
     <Compile Include="Models\DiaDiemDuLich.cs" />
     <Compile Include="Models\KhachHang.cs" />

@@ -4,54 +4,96 @@
     ViewBag.Title = "Sửa khách hàng";
 }
 
-<h2 class="mb-3">Sửa khách hàng</h2>
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    @Html.HiddenFor(m => m.IdKhachHang)
-    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
-
-    <div class="mb-3">
-        @Html.Label("Tài khoản", new { @class = "form-label" })
-        @Html.DropDownList("IdTaiKhoan", (SelectList)ViewBag.IdTaiKhoan, "-- Chọn tài khoản --", new { @class = "form-select" })
-    </div>
-
-    <div class="mb-3">
-        @Html.LabelFor(m => m.HoTen, "Họ tên", new { @class = "form-label" })
-        @Html.TextBoxFor(m => m.HoTen, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.HoTen, "", new { @class = "text-danger" })
-    </div>
-
-    <div class="mb-3">
-        @Html.LabelFor(m => m.Email, "Email", new { @class = "form-label" })
-        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
-        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-    </div>
-
-    <div class="mb-3">
-        @Html.LabelFor(m => m.SoDienThoai, "Số điện thoại", new { @class = "form-label" })
-        @Html.TextBoxFor(m => m.SoDienThoai, new { @class = "form-control" })
-    </div>
-
-    <div class="mb-3">
-        @Html.LabelFor(m => m.DiaChi, "Địa chỉ", new { @class = "form-label" })
-        @Html.TextAreaFor(m => m.DiaChi, 2, 50, new { @class = "form-control" })
-    </div>
-
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            @Html.LabelFor(m => m.NgaySinh, "Ngày sinh", new { @class = "form-label" })
-            @Html.TextBoxFor(m => m.NgaySinh, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
-        </div>
-        <div class="col-md-6 mb-3">
-            @Html.LabelFor(m => m.GioiTinh, "Giới tính", new { @class = "form-label" })
-            @Html.TextBoxFor(m => m.GioiTinh, new { @class = "form-control" })
-        </div>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-    @Html.ActionLink("Quay lại", "KhachHangs", null, new { @class = "btn btn-secondary ms-2" })
+@section PageActions{
+    <a href="@Url.Action("KhachHangs", "Admin")" class="btn btn-light text-secondary rounded-pill fw-semibold">
+        <i class="fa-solid fa-arrow-left me-2"></i>Quay lại danh sách
+    </a>
 }
 
+<div class="row justify-content-center">
+    <div class="col-xl-8 col-lg-10">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-header bg-white border-bottom py-4 px-5">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0 fw-bold text-info">Cập nhật hồ sơ khách hàng</h4>
+                        <p class="text-muted small mb-0 mt-1">Chỉnh sửa thông tin khách hàng #@Model.IdKhachHang</p>
+                    </div>
+                    <span class="badge bg-light text-dark border px-3 py-2">Mã: @Model.IdKhachHang</span>
+                </div>
+            </div>
+            <div class="card-body p-5">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.IdKhachHang)
+                    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger rounded-3 mb-4" })
 
+                    <div class="row g-4">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                @Html.Label("Tài khoản liên kết", new { @class = "form-label fw-semibold" })
+                                @Html.DropDownListFor(m => m.IdTaiKhoan, (SelectList)ViewBag.IdTaiKhoan, "-- Chọn tài khoản (nếu có) --", new { @class = "form-select bg-light border-0" })
+                                @Html.ValidationMessageFor(m => m.IdTaiKhoan, "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                @Html.LabelFor(m => m.HoTen, "Họ tên", new { @class = "form-label fw-semibold" })
+                                @Html.TextBoxFor(m => m.HoTen, new { @class = "form-control form-control-lg bg-light border-0" })
+                                @Html.ValidationMessageFor(m => m.HoTen, "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                @Html.LabelFor(m => m.Email, "Email", new { @class = "form-label fw-semibold" })
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control bg-light border-0", type = "email" })
+                                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                @Html.LabelFor(m => m.SoDienThoai, "Số điện thoại", new { @class = "form-label fw-semibold" })
+                                @Html.TextBoxFor(m => m.SoDienThoai, new { @class = "form-control bg-light border-0" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                @Html.LabelFor(m => m.DiaChi, "Địa chỉ", new { @class = "form-label fw-semibold" })
+                                @Html.TextAreaFor(m => m.DiaChi, 3, 50, new { @class = "form-control bg-light border-0" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                @Html.LabelFor(m => m.NgaySinh, "Ngày sinh", new { @class = "form-label fw-semibold" })
+                                @Html.TextBoxFor(m => m.NgaySinh, "{0:yyyy-MM-dd}", new { @class = "form-control bg-light border-0", type = "date" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                @Html.LabelFor(m => m.GioiTinh, "Giới tính", new { @class = "form-label fw-semibold" })
+                                @Html.DropDownListFor(m => m.GioiTinh, new SelectList(new[] {
+                                    new { Value = "nam", Text = "Nam" },
+                                    new { Value = "nu", Text = "Nữ" },
+                                    new { Value = "khac", Text = "Khác" }
+                                }, "Value", "Text", Model?.GioiTinh), "-- Chọn giới tính --", new { @class = "form-select bg-light border-0" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mt-4">
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-info text-white btn-lg rounded-pill fw-bold shadow-sm">
+                                    <i class="fa-solid fa-floppy-disk me-2"></i>Lưu thay đổi
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

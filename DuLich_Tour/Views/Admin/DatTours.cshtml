@@ -42,14 +42,19 @@
         {
             var guests = item.SoNguoiLon + item.SoTreEm;
             string statusClass = "bg-warning text-dark";
+            string statusLabel = "Chờ xác nhận";
+
             if (item.TrangThai == "da-xac-nhan")
             {
                 statusClass = "bg-success";
+                statusLabel = "Đã xác nhận";
             }
             else if (item.TrangThai == "da-huy")
             {
                 statusClass = "bg-danger";
+                statusLabel = "Đã hủy";
             }
+            
             var customerName = item.KhachHang != null ? item.KhachHang.HoTen : "-";
             var customerEmail = item.KhachHang != null ? item.KhachHang.Email : "-";
             var tourName = item.TourDuLich != null ? item.TourDuLich.TenTour : "-";
@@ -66,7 +71,7 @@
                 <td>@item.NgayDat.ToString("dd/MM/yyyy")</td>
                 <td>@guests người</td>
                 <td>
-                    <span class="badge @statusClass text-capitalize px-3 py-2">@item.TrangThai</span>
+                    <span class="badge @statusClass px-3 py-2">@statusLabel</span>
                 </td>
                 <td class="text-end">
                     <a href="@Url.Action("DatTourDetails", new { id = item.IdDatTour })" class="btn btn-outline-secondary btn-sm rounded-pill me-2">
