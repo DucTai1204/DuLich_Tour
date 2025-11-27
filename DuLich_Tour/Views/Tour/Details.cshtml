@@ -248,7 +248,7 @@
             <div class="booking-info">
                 <div class="booking-info-item">
                     <i class="fas fa-map-marker-alt"></i>
-                    <span>@(Model.DiaDiemDuLich?.TenDiaDiem ?? "Chưa xác định")</span>
+                    <span>@(Model.DiaDiemDuLich != null ? Model.DiaDiemDuLich.TenDiaDiem : "Chua xac dinh")</span>
                 </div>
                 @if (Model.NgayBatDau.HasValue && Model.NgayKetThuc.HasValue)
                 {

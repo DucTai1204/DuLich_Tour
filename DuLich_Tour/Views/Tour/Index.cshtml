@@ -243,13 +243,15 @@
                             </div>
                             <div class="tour-card-location">
                                 <i class="fas fa-map-marker-alt"></i>
-                                <span>@(tour.DiaDiemDuLich?.TenDiaDiem ?? "Chưa xác định")</span>
+                                <span>@(tour.DiaDiemDuLich != null ? tour.DiaDiemDuLich.TenDiaDiem : "Chua xac dinh")</span>
                             </div>
                             
                             <!-- Đánh giá tour -->
                             @{
-                                int reviewCount = ViewData[$"ReviewCount_{tour.IdTour}"] != null ? (int)ViewData[$"ReviewCount_{tour.IdTour}"] : 0;
-                                double reviewAvg = ViewData[$"ReviewAvg_{tour.IdTour}"] != null ? (double)ViewData[$"ReviewAvg_{tour.IdTour}"] : 0.0;
+                                string reviewCountKey = "ReviewCount_" + tour.IdTour;
+                                string reviewAvgKey = "ReviewAvg_" + tour.IdTour;
+                                int reviewCount = ViewData[reviewCountKey] != null ? (int)ViewData[reviewCountKey] : 0;
+                                double reviewAvg = ViewData[reviewAvgKey] != null ? (double)ViewData[reviewAvgKey] : 0.0;
                             }
                             @if (reviewCount > 0)
                             {

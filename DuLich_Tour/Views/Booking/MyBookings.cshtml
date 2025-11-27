@@ -178,7 +178,7 @@
                         <div class="booking-card">
                             <div class="booking-header">
                                 <div>
-                                    <h5 class="booking-title">@(booking.TourDuLich?.TenTour ?? "Tour không tồn tại")</h5>
+                                    <h5 class="booking-title">@(booking.TourDuLich != null ? booking.TourDuLich.TenTour : "Tour khong ton tai")</h5>
                                     <div class="booking-date">
                                         <i class="fas fa-calendar me-1"></i>
                                         @booking.NgayDat.ToString("dd/MM/yyyy HH:mm")
@@ -199,7 +199,7 @@
                                 {
                                     <div class="booking-info-item">
                                         <i class="fas fa-map-marker-alt"></i>
-                                        <span>@(booking.TourDuLich.DiaDiemDuLich?.TenDiaDiem ?? "Chưa xác định")</span>
+                                        <span>@(booking.TourDuLich.DiaDiemDuLich != null ? booking.TourDuLich.DiaDiemDuLich.TenDiaDiem : "Chua xac dinh")</span>
                                     </div>
                                     
                                     if (booking.TourDuLich.NgayBatDau.HasValue)

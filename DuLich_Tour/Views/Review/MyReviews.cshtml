@@ -158,7 +158,7 @@
                         <div class="review-card">
                             <div class="review-header">
                                 <div class="review-tour-info">
-                                    <h5>@(review.TourDuLich?.TenTour ?? "Tour không tồn tại")</h5>
+                                    <h5>@(review.TourDuLich != null ? review.TourDuLich.TenTour : "Tour khong ton tai")</h5>
                                     @if (review.TourDuLich != null && review.TourDuLich.DiaDiemDuLich != null)
                                     {
                                         <p>
