@@ -112,7 +112,10 @@ Xem thêm test cards tại: https://stripe.com/docs/testing
 
 3. **Security:**
    - **KHÔNG BAO GIỜ** commit Secret Key vào Git
+   - **Web.config hiện tại đã được cấu hình với placeholder `YOUR_STRIPE_SECRET_KEY`**
+   - **Bạn cần thay thế `YOUR_STRIPE_SECRET_KEY` bằng Secret Key thực tế của bạn trong file Web.config local**
    - Sử dụng Web.config transforms hoặc Azure App Settings cho production
+   - Nếu đã commit Secret Key vào Git, cần xóa nó khỏi lịch sử commit trước khi push
 
 ## Troubleshooting:
 
