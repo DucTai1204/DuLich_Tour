@@ -1,0 +1,86 @@
+@model IEnumerable<DuLich_Tour.Models.TourDuLich>
+
+@{
+    ViewBag.Title = "Quản lý Tours";
+}
+
+@section PageActions{
+    <a href="@Url.Action("CreateTour", "Admin")" class="btn btn-primary rounded-pill">
+        <i class="fa-solid fa-plus me-2"></i>Thêm tour
+    </a>
+}
+
+<div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between mb-3 gap-3">
+    <div>
+        <h2 class="h4 fw-semibold mb-1">Danh sách tour du lịch</h2>
+        <p class="text-muted mb-0">Theo dõi trạng thái bán, giá và lịch trình.</p>
+    </div>
+    <div class="input-group input-group-sm w-100 w-lg-50 shadow-sm">
+        <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass"></i></span>
+        <input type="search" class="form-control border-start-0" placeholder="Nhập tên tour để tìm nhanh (client side)" onkeyup="filterTours(this.value)" />
+    </div>
+</div>
+
+<div class="table-responsive shadow-sm rounded-4 border">
+    <table class="table align-middle mb-0" id="tourTable">
+        <thead class="table-light text-uppercase small text-muted">
+            <tr>
+                <th>Mã</th>
+                <th>Tên tour</th>
+                <th>Địa điểm</th>
+                <th>Ngày</th>
+                <th>Giá người lớn</th>
+                <th>Trạng thái</th>
+                <th class="text-end">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            var statusClass = item.TrangThai == "mo-ban" ? "success" : "secondary";
+            <tr>
+                <td class="fw-semibold">#@item.IdTour</td>
+                <td>
+                    <span class="fw-semibold d-block">@item.TenTour</span>
+                    <small class="text-muted">@item.MoTaNgan</small>
+                </td>
+                <td>@(item.DiaDiemDuLich?.TenDiaDiem ?? "—")</td>
+                <td>
+                    <div class="d-flex flex-column">
+                        <small class="text-muted">Bắt đầu</small>
+                        <span>@(item.NgayBatDau?.ToString("dd/MM/yyyy") ?? "—")</span>
+                        <small class="text-muted mt-1">Kết thúc</small>
+                        <span>@(item.NgayKetThuc?.ToString("dd/MM/yyyy") ?? "—")</span>
+                    </div>
+                </td>
+                <td class="fw-semibold text-primary">@item.GiaNguoiLon.ToString("N0") đ</td>
+                <td>
+                    <span class="badge bg-@statusClass text-capitalize px-3 py-2">@item.TrangThai</span>
+                </td>
+                <td class="text-end">
+                    <a href="@Url.Action("EditTour", new { id = item.IdTour })" class="btn btn-outline-secondary btn-sm rounded-pill me-2">
+                        <i class="fa-solid fa-pen-to-square me-1"></i>Sửa
+                    </a>
+                    <a href="@Url.Action("DeleteTour", new { id = item.IdTour })" class="btn btn-outline-danger btn-sm rounded-pill">
+                        <i class="fa-solid fa-trash me-1"></i>Xóa
+                    </a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@section scripts{
+    <script>
+        function filterTours(keyword) {
+            const filter = keyword.toLowerCase();
+            document.querySelectorAll('#tourTable tbody tr').forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            });
+        }
+    </script>
+}
+
+

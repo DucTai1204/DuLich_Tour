@@ -1,0 +1,22 @@
+@model DuLich_Tour.Models.KhachHang
+
+@{
+    ViewBag.Title = "Xóa khách hàng";
+}
+
+<h2 class="mb-3 text-danger">Xóa khách hàng</h2>
+
+<div class="alert alert-warning">
+    Bạn có chắc chắn muốn xóa khách hàng <strong>@Model.HoTen (@Model.Email)</strong>?
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.IdKhachHang)
+
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    @Html.ActionLink("Hủy", "KhachHangs", null, new { @class = "btn btn-secondary ms-2" })
+}
+
+

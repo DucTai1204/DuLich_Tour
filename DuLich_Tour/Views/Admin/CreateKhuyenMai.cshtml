@@ -1,0 +1,72 @@
+@{
+    ViewBag.Title = "Thêm khuyến mãi";
+}
+
+@section PageActions{
+    @Html.ActionLink("Danh sách khuyến mãi", "KhuyenMais", null, new { @class = "btn btn-outline-secondary rounded-pill" })
+}
+
+<div class="card shadow-sm border-0 form-card">
+    <div class="card-body p-4 p-lg-5">
+        <h2 class="fw-bold mb-4">Chương trình khuyến mãi</h2>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(false, "", new { @class = "alert alert-danger rounded-3" })
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm p-4 mb-4">
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.TenChuongTrinh, "Tên chương trình", new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.TenChuongTrinh, new { @class = "form-control form-control-lg", placeholder = "Tên chương trình" })
+                            @Html.ValidationMessageFor(m => m.TenChuongTrinh, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.MoTa, "Mô tả", new { @class = "form-label" })
+                            @Html.TextAreaFor(m => m.MoTa, 4, 50, new { @class = "form-control", placeholder = "Mô tả điều kiện áp dụng..." })
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                @Html.LabelFor(m => m.GiaTri, "Giá trị giảm", new { @class = "form-label" })
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa-solid fa-percent"></i></span>
+                                    @Html.TextBoxFor(m => m.GiaTri, new { @class = "form-control", type = "number", step = "0.01", placeholder = "Giá trị giảm" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.LabelFor(m => m.KieuGiam, "Kiểu giảm", new { @class = "form-label" })
+                                @Html.TextBoxFor(m => m.KieuGiam, new { @class = "form-control", placeholder = "phan_tram / so_tien" })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.LabelFor(m => m.NgayBatDau, "Ngày bắt đầu", new { @class = "form-label" })
+                                @Html.TextBoxFor(m => m.NgayBatDau, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.LabelFor(m => m.NgayKetThuc, "Ngày kết thúc", new { @class = "form-label" })
+                                @Html.TextBoxFor(m => m.NgayKetThuc, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm p-4 h-100">
+                        <div class="form-check form-switch mb-4">
+                            @Html.CheckBoxFor(m => m.TrangThai, new { @class = "form-check-input", role = "switch", id = "TrangThai" })
+                            <label class="form-check-label" for="TrangThai">Kích hoạt ngay</label>
+                        </div>
+                        <p class="text-muted small mb-4">Khuyến mãi sẽ hiển thị trong danh sách khi được kích hoạt và còn hạn.</p>
+                        <button type="submit" class="btn btn-primary w-100 mb-2">
+                            <i class="fa-solid fa-floppy-disk me-2"></i>Lưu khuyến mãi
+                        </button>
+                        @Html.ActionLink("Hủy bỏ", "KhuyenMais", null, new { @class = "btn btn-outline-secondary w-100" })
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@model DuLich_Tour.Models.KhuyenMai
+
+
+

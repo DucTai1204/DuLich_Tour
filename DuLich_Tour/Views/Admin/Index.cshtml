@@ -1,0 +1,68 @@
+@using System
+@{
+    ViewBag.Title = "Tổng quan hệ thống";
+}
+
+<div class="row g-4">
+    <div class="col-12">
+        <div class="p-4 bg-gradient-primary text-white rounded-4 shadow-sm">
+            <h2 class="fw-bold mb-2">Xin chào, @Session["TenDangNhap"]!</h2>
+            <p class="mb-0 opacity-75">Theo dõi nhanh các chỉ số chính và điều hướng tới những module quản lý bạn cần.</p>
+        </div>
+    </div>
+
+    @{
+        Func<dynamic, int> asInt = value => Convert.ToInt32(value ?? 0);
+        var cards = new[]
+        {
+            new { Icon = "fa-map-location-dot", Title = "Tours đang quản lý", Count = asInt(ViewBag.TourCount), Action = "Tours", Color = "primary" },
+            new { Icon = "fa-mountain", Title = "Địa điểm du lịch", Count = asInt(ViewBag.DiaDiemCount), Action = "DiaDiems", Color = "success" },
+            new { Icon = "fa-gift", Title = "Chương trình khuyến mãi", Count = asInt(ViewBag.KhuyenMaiCount), Action = "KhuyenMais", Color = "warning" },
+            new { Icon = "fa-users", Title = "Khách hàng đăng ký", Count = asInt(ViewBag.KhachHangCount), Action = "KhachHangs", Color = "info" },
+            new { Icon = "fa-user-shield", Title = "Tài khoản hệ thống", Count = asInt(ViewBag.TaiKhoanCount), Action = "TaiKhoans", Color = "secondary" }
+        };
+    }
+
+    @foreach (var card in cards)
+    {
+        <div class="col-sm-6 col-lg-4 col-xxl-3">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-muted text-uppercase small mb-1">@card.Title</p>
+                            <h3 class="fw-bold">@card.Count</h3>
+                        </div>
+                        <span class="stat-icon text-@card.Color">
+                            <i class="fa-solid @card.Icon"></i>
+                        </span>
+                    </div>
+                    <div class="mt-3">
+                        @Html.ActionLink("Đi tới quản lý →", card.Action, "Admin", null, new { @class = "btn btn-outline-@card.Color btn-sm rounded-pill" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts{
+    <style>
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+        }
+
+        .stat-card {
+            border-radius: 1rem;
+        }
+
+        .stat-icon {
+            font-size: 2.25rem;
+            background-color: rgba(13, 110, 253, 0.08);
+            padding: 0.75rem 1rem;
+            border-radius: 0.85rem;
+        }
+    </style>
+}
+
+

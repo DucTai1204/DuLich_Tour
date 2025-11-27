@@ -1,0 +1,118 @@
+@model DuLich_Tour.Models.DatTour
+
+@{
+    ViewBag.Title = $"Đơn #{Model.IdDatTour}";
+}
+
+@section PageActions{
+    @Html.ActionLink("Quay về danh sách", "DatTours", null, new { @class = "btn btn-outline-secondary rounded-pill" })
+}
+
+<div class="row g-4">
+    <div class="col-xl-8">
+        <div class="card border-0 shadow-sm form-card h-100">
+            <div class="card-body p-4">
+                <p class="text-uppercase text-muted small mb-1">Thông tin đặt tour</p>
+                <h2 class="h4 fw-bold mb-4">Đơn đặt tour #@Model.IdDatTour</h2>
+
+                @{
+                    var customerName = Model.KhachHang != null ? Model.KhachHang.HoTen : "-";
+                    var customerEmail = Model.KhachHang != null ? Model.KhachHang.Email : "-";
+                    var customerPhone = Model.KhachHang != null ? Model.KhachHang.SoDienThoai : "-";
+                    var tourName = Model.TourDuLich != null ? Model.TourDuLich.TenTour : "-";
+                    var locationName = Model.TourDuLich?.DiaDiemDuLich != null ? Model.TourDuLich.DiaDiemDuLich.TenDiaDiem : "-";
+                    var startDate = Model.TourDuLich?.NgayBatDau.HasValue == true ? Model.TourDuLich.NgayBatDau.Value.ToString("dd/MM/yyyy") : "-";
+                }
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h6 class="text-muted text-uppercase small">Khách hàng</h6>
+                        <p class="mb-1 fw-semibold">@customerName</p>
+                        <p class="mb-1"><i class="fa-solid fa-envelope me-2"></i>@customerEmail</p>
+                        <p class="mb-0"><i class="fa-solid fa-phone me-2"></i>@customerPhone</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted text-uppercase small">Tour</h6>
+                        <p class="mb-1 fw-semibold">@tourName</p>
+                        <p class="mb-1 text-muted">@locationName</p>
+                        <p class="mb-0 text-muted">Khởi hành: @startDate</p>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <h6 class="text-muted text-uppercase small">Ngày đặt</h6>
+                        <p class="fw-semibold mb-0">@Model.NgayDat.ToString("dd/MM/yyyy HH:mm")</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-muted text-uppercase small">Số khách</h6>
+                        <p class="mb-0">Người lớn: <strong>@Model.SoNguoiLon</strong></p>
+                        <p class="mb-0">Trẻ em: <strong>@Model.SoTreEm</strong></p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-muted text-uppercase small">Trạng thái</h6>
+                        @{
+                            var statusClass = "bg-warning text-dark";
+                            if (Model.TrangThai == "da-xac-nhan")
+                            {
+                                statusClass = "bg-success";
+                            }
+                            else if (Model.TrangThai == "da-huy")
+                            {
+                                statusClass = "bg-danger";
+                            }
+                        }
+                        <span class="badge @statusClass text-capitalize px-3 py-2">@Model.TrangThai</span>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h6 class="text-muted text-uppercase small">Thanh toán</h6>
+                        <p class="mb-1">Phương thức: <strong>@Model.PhuongThucThanhToan</strong></p>
+                        <p class="mb-1">Mã thanh toán: <strong>@Model.MaThanhToan ?? "-"</strong></p>
+                        <p class="mb-0">Tổng tiền: <strong>@Model.TongTien.ToString("N0") đ</strong></p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted text-uppercase small">Ghi chú</h6>
+                        <p class="mb-0">@(!string.IsNullOrWhiteSpace(Model.GhiChu) ? Model.GhiChu : "—")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="card border-0 shadow-sm form-card mb-4">
+            <div class="card-body p-4">
+                <h5 class="fw-semibold mb-3">Hành động</h5>
+                @if (Model.TrangThai != "da-xac-nhan")
+                {
+                    using (Html.BeginForm("ApproveBooking", "Admin", new { id = Model.IdDatTour }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-success w-100 mb-2">
+                            <i class="fa-solid fa-check me-2"></i>Duyệt đơn
+                        </button>
+                    }
+                }
+                @if (Model.TrangThai != "da-huy")
+                {
+                    using (Html.BeginForm("RejectBooking", "Admin", new { id = Model.IdDatTour }, FormMethod.Post, new { onsubmit = "return confirm('Bạn có chắc muốn hủy đơn này?');" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-danger w-100 mb-2">
+                            <i class="fa-solid fa-xmark me-2"></i>Hủy đơn
+                        </button>
+                    }
+                }
+                @Html.ActionLink("Quay lại danh sách", "DatTours", null, new { @class = "btn btn-outline-secondary w-100" })
+            </div>
+        </div>
+    </div>
+</div>
+

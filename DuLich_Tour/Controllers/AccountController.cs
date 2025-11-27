@@ -119,7 +119,14 @@ namespace DuLich_Tour.Controllers
                     user.LanDangNhapCuoi = DateTime.Now;
                     db.SaveChanges();
 
-                    return RedirectToAction("Index", "Home"); // chuyển đến trang chính
+                    // Nếu là admin thì chuyển vào khu vực quản trị
+                    if (!string.IsNullOrEmpty(user.VaiTro) && user.VaiTro.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return RedirectToAction("Index", "Admin");
+                    }
+
+                    // Ngược lại đưa về trang chủ
+                    return RedirectToAction("Index", "Home");
                 }
             } // db.Dispose() được gọi tự động ở đây
 

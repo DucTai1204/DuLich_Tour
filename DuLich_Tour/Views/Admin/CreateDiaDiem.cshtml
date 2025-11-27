@@ -1,0 +1,60 @@
+@model DuLich_Tour.Models.DiaDiemDuLich
+
+@{
+    ViewBag.Title = "Thêm địa điểm";
+}
+
+@section PageActions{
+    @Html.ActionLink("Danh sách địa điểm", "DiaDiems", null, new { @class = "btn btn-outline-secondary rounded-pill" })
+}
+
+<div class="card shadow-sm border-0 form-card">
+    <div class="card-body p-4 p-lg-5">
+        <h2 class="fw-bold mb-4">Địa điểm mới</h2>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(false, "", new { @class = "alert alert-danger rounded-3" })
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm p-4 mb-4">
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.TenDiaDiem, "Tên địa điểm", new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.TenDiaDiem, new { @class = "form-control form-control-lg", placeholder = "Tên địa điểm hiển thị với khách" })
+                            @Html.ValidationMessageFor(m => m.TenDiaDiem, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.ViTri, "Vị trí", new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.ViTri, new { @class = "form-control", placeholder = "Địa chỉ/ tỉnh thành" })
+                        </div>
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.MoTa, "Mô tả", new { @class = "form-label" })
+                            @Html.TextAreaFor(m => m.MoTa, 4, 40, new { @class = "form-control", placeholder = "Mô tả ngắn về địa điểm..." })
+                        </div>
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.HinhAnh, "Hình ảnh", new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.HinhAnh, new { @class = "form-control", placeholder = "URL hình ảnh đại diện" })
+                            <div class="input-helper mt-1">Hình ảnh sẽ xuất hiện trong trang tour.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm p-4 h-100">
+                        <h5 class="fw-semibold mb-3">Trạng thái hiển thị</h5>
+                        <div class="form-check form-switch mb-4">
+                            @Html.CheckBoxFor(m => m.TrangThai, new { @class = "form-check-input", role = "switch", id = "TrangThai" })
+                            <label class="form-check-label" for="TrangThai">Đang sử dụng</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mb-2">
+                            <i class="fa-solid fa-floppy-disk me-2"></i>Lưu địa điểm
+                        </button>
+                        @Html.ActionLink("Hủy bỏ", "DiaDiems", null, new { @class = "btn btn-outline-secondary w-100" })
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+

@@ -1,0 +1,57 @@
+@model DuLich_Tour.Models.KhachHang
+
+@{
+    ViewBag.Title = "Sửa khách hàng";
+}
+
+<h2 class="mb-3">Sửa khách hàng</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.IdKhachHang)
+    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
+
+    <div class="mb-3">
+        @Html.Label("Tài khoản", new { @class = "form-label" })
+        @Html.DropDownList("IdTaiKhoan", (SelectList)ViewBag.IdTaiKhoan, "-- Chọn tài khoản --", new { @class = "form-select" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.HoTen, "Họ tên", new { @class = "form-label" })
+        @Html.TextBoxFor(m => m.HoTen, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.HoTen, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Email, "Email", new { @class = "form-label" })
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
+        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.SoDienThoai, "Số điện thoại", new { @class = "form-label" })
+        @Html.TextBoxFor(m => m.SoDienThoai, new { @class = "form-control" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.DiaChi, "Địa chỉ", new { @class = "form-label" })
+        @Html.TextAreaFor(m => m.DiaChi, 2, 50, new { @class = "form-control" })
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            @Html.LabelFor(m => m.NgaySinh, "Ngày sinh", new { @class = "form-label" })
+            @Html.TextBoxFor(m => m.NgaySinh, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+        </div>
+        <div class="col-md-6 mb-3">
+            @Html.LabelFor(m => m.GioiTinh, "Giới tính", new { @class = "form-label" })
+            @Html.TextBoxFor(m => m.GioiTinh, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+    @Html.ActionLink("Quay lại", "KhachHangs", null, new { @class = "btn btn-secondary ms-2" })
+}
+
+

@@ -1,0 +1,22 @@
+@model DuLich_Tour.Models.TaiKhoan
+
+@{
+    ViewBag.Title = "Xóa tài khoản";
+}
+
+<h2 class="mb-3 text-danger">Xóa tài khoản</h2>
+
+<div class="alert alert-warning">
+    Bạn có chắc chắn muốn xóa tài khoản <strong>@Model.TenDangNhap</strong>?
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.IdTaiKhoan)
+
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    @Html.ActionLink("Hủy", "TaiKhoans", null, new { @class = "btn btn-secondary ms-2" })
+}
+
+

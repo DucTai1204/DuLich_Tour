@@ -1,0 +1,22 @@
+@model DuLich_Tour.Models.KhuyenMai
+
+@{
+    ViewBag.Title = "Xóa khuyến mãi";
+}
+
+<h2 class="mb-3 text-danger">Xóa khuyến mãi</h2>
+
+<div class="alert alert-warning">
+    Bạn có chắc chắn muốn xóa khuyến mãi <strong>@Model.TenChuongTrinh</strong>?
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.IdKhuyenMai)
+
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    @Html.ActionLink("Hủy", "KhuyenMais", null, new { @class = "btn btn-secondary ms-2" })
+}
+
+

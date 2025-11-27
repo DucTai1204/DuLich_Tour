@@ -1,0 +1,129 @@
+@model DuLich_Tour.Models.TourDuLich
+
+@{
+    ViewBag.Title = "Tạo tour mới";
+}
+
+@section PageActions{
+    @Html.ActionLink("Danh sách tour", "Tours", null, new { @class = "btn btn-outline-secondary rounded-pill" })
+}
+
+<div class="card shadow-sm border-0 form-card">
+    <div class="card-body p-4 p-lg-5">
+        <h2 class="fw-bold mb-4">Thông tin tour</h2>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(false, "", new { @class = "alert alert-danger rounded-3" })
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="mb-4">
+                        <label class="form-section-title">Thông tin cơ bản</label>
+                        <div class="card border-0 shadow-sm p-4">
+                            <div class="mb-3">
+                                @Html.LabelFor(m => m.TenTour, "Tên tour", new { @class = "form-label" })
+                                @Html.TextBoxFor(m => m.TenTour, new { @class = "form-control form-control-lg", placeholder = "Ví dụ: Hành trình khám phá Đà Lạt 3N2Đ" })
+                                @Html.ValidationMessageFor(m => m.TenTour, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Địa điểm</label>
+                                    @Html.DropDownList("IdDiaDiem", (SelectList)ViewBag.IdDiaDiem, "-- Chọn địa điểm --", new { @class = "form-select" })
+                                    @Html.ValidationMessage("IdDiaDiem", "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Khuyến mãi</label>
+                                    @Html.DropDownList("IdKhuyenMai", (SelectList)ViewBag.IdKhuyenMai, "-- Không áp dụng --", new { @class = "form-select" })
+                                    @Html.ValidationMessage("IdKhuyenMai", "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                @Html.LabelFor(m => m.MoTaNgan, "Mô tả ngắn", new { @class = "form-label" })
+                                @Html.TextAreaFor(m => m.MoTaNgan, 3, 50, new { @class = "form-control", placeholder = "Tóm tắt điểm nổi bật của tour..." })
+                            </div>
+                            <div class="mt-3">
+                                @Html.LabelFor(m => m.LichTrinh, "Lịch trình", new { @class = "form-label" })
+                                @Html.TextAreaFor(m => m.LichTrinh, 6, 50, new { @class = "form-control", placeholder = "Nhập lịch trình chi tiết từng ngày..." })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-section-title">Lịch trình & giá</label>
+                        <div class="card border-0 shadow-sm p-4">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    @Html.LabelFor(m => m.NgayBatDau, "Ngày bắt đầu", new { @class = "form-label" })
+                                    @Html.TextBoxFor(m => m.NgayBatDau, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                    @Html.ValidationMessageFor(m => m.NgayBatDau, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.LabelFor(m => m.NgayKetThuc, "Ngày kết thúc", new { @class = "form-label" })
+                                    @Html.TextBoxFor(m => m.NgayKetThuc, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                    @Html.ValidationMessageFor(m => m.NgayKetThuc, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.LabelFor(m => m.GiaNguoiLon, "Giá người lớn", new { @class = "form-label" })
+                                    <div class="input-group">
+                                        <span class="input-group-text">đ</span>
+                                        @Html.TextBoxFor(m => m.GiaNguoiLon, new { @class = "form-control", type = "number", step = "1000", placeholder = "Giá người lớn" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.GiaNguoiLon, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.LabelFor(m => m.GiaTreEm, "Giá trẻ em", new { @class = "form-label" })
+                                    <div class="input-group">
+                                        <span class="input-group-text">đ</span>
+                                        @Html.TextBoxFor(m => m.GiaTreEm, new { @class = "form-control", type = "number", step = "1000", placeholder = "Giá trẻ em" })
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.GiaTreEm, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-section-title">Số lượng & hiển thị</label>
+                        <div class="card border-0 shadow-sm p-4">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    @Html.LabelFor(m => m.SoCho, "Tổng số chỗ", new { @class = "form-label" })
+                                    @Html.TextBoxFor(m => m.SoCho, new { @class = "form-control", type = "number", min = "1" })
+                                    @Html.ValidationMessageFor(m => m.SoCho, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(m => m.SoChoConLai, "Số chỗ còn lại", new { @class = "form-label" })
+                                    @Html.TextBoxFor(m => m.SoChoConLai, new { @class = "form-control", type = "number", min = "0" })
+                                    @Html.ValidationMessageFor(m => m.SoChoConLai, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(m => m.TrangThai, "Trạng thái", new { @class = "form-label" })
+                                    @Html.TextBoxFor(m => m.TrangThai, new { @class = "form-control", placeholder = "Ví dụ: mo-ban" })
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                @Html.LabelFor(m => m.HinhAnh, "Ảnh đại diện", new { @class = "form-label" })
+                                @Html.TextBoxFor(m => m.HinhAnh, new { @class = "form-control", placeholder = "URL ảnh bìa" })
+                                <div class="input-helper mt-1">Nên sử dụng ảnh tỉ lệ ngang, dung lượng &lt; 1MB.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm p-4 h-100">
+                        <h5 class="fw-semibold mb-3">Tùy chọn nhanh</h5>
+                        <p class="text-muted small mb-4">Hoàn tất form và lưu để tour xuất hiện trong danh sách bán.</p>
+                        <button type="submit" class="btn btn-primary w-100 mb-2">
+                            <i class="fa-solid fa-floppy-disk me-2"></i>Lưu tour
+                        </button>
+                        @Html.ActionLink("Hủy bỏ", "Tours", null, new { @class = "btn btn-outline-secondary w-100" })
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+

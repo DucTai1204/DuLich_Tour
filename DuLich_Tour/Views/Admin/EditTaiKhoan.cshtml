@@ -1,0 +1,41 @@
+@model DuLich_Tour.Models.TaiKhoan
+
+@{
+    ViewBag.Title = "Sửa tài khoản";
+}
+
+<h2 class="mb-3">Sửa tài khoản</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.IdTaiKhoan)
+    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.TenDangNhap, "Tên đăng nhập", new { @class = "form-label" })
+        @Html.TextBoxFor(m => m.TenDangNhap, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.TenDangNhap, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Mật khẩu mới (để trống nếu giữ nguyên)</label>
+        <input type="password" name="matKhauPlain" class="form-control" />
+        @Html.ValidationMessage("matKhauPlain", "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.VaiTro, "Vai trò", new { @class = "form-label" })
+        @Html.TextBoxFor(m => m.VaiTro, new { @class = "form-control" })
+    </div>
+
+    <div class="form-check mb-3">
+        @Html.CheckBoxFor(m => m.TrangThai, new { @class = "form-check-input", id = "TrangThai" })
+        <label class="form-check-label" for="TrangThai">Hoạt động</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+    @Html.ActionLink("Quay lại", "TaiKhoans", null, new { @class = "btn btn-secondary ms-2" })
+}
+
+
