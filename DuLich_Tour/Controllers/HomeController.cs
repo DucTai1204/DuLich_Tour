@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DuLich_Tour.Models;
+using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using DuLich_Tour.Models;
 
@@ -9,6 +8,9 @@ namespace DuLich_Tour.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly TourDbContext _context = new TourDbContext();
+
+        // GET: Home
         public ActionResult Index()
         {
             List<TourDuLich> tours = new List<TourDuLich>();
@@ -39,18 +41,11 @@ namespace DuLich_Tour.Controllers
             return View(tours);
         }
 
-        public ActionResult About()
+        protected override void Dispose(bool disposing)
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            if (disposing)
+                _context.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

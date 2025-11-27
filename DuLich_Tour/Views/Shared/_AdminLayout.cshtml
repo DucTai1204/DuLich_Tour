@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Admin | Du Lịch Khám Phá</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #f4f6f9;
+        }
+
+        .admin-sidebar {
+            min-height: 100vh;
+            background-color: #1f2937;
+            color: #fff;
+        }
+
+        .admin-sidebar .nav-link {
+            color: #cbd5f5;
+        }
+
+        .admin-sidebar .nav-link.active,
+        .admin-sidebar .nav-link:hover {
+            background-color: #374151;
+            color: #fff;
+        }
+
+        .admin-navbar {
+            background-color: #fff;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .admin-card {
+            border-radius: 1rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .admin-form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+        }
+
+        table.table tr th,
+        table.table tr td {
+            vertical-align: middle;
+        }
+
+        .form-card {
+            border-radius: 1.25rem;
+        }
+
+        .form-section-title {
+            font-size: 0.95rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: #6b7280;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+
+        .input-helper {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    @{
+        var currentController = (ViewContext.RouteData.Values["controller"] as string ?? "").ToLower();
+        var currentAction = (ViewContext.RouteData.Values["action"] as string ?? "").ToLower();
+
+        Func<string, string, string> navClass = (ctrl, action) =>
+        {
+            bool controllerMatch = currentController == ctrl.ToLower();
+            bool actionMatch = string.IsNullOrWhiteSpace(action) || currentAction == action.ToLower();
+            return controllerMatch && actionMatch ? "nav-link active" : "nav-link";
+        };
+    }
+
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <nav class="col-12 col-md-3 col-xl-2 px-sm-2 px-0 admin-sidebar">
+                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-3 text-white">
+                    <a href="@Url.Action("Index", "Admin")" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                        <i class="fa-solid fa-compass me-2"></i>
+                        <span class="fs-5 fw-semibold">Admin Dashboard</span>
+                    </a>
+                    <hr class="w-100 border-secondary" />
+                    <ul class="nav nav-pills flex-column mb-sm-auto w-100 mb-0">
+                        <li class="nav-item mb-1">
+                            <a href="@Url.Action("Index", "Admin")" class="@navClass("admin","index")">
+                                <i class="fa-solid fa-chart-simple me-2"></i> Tổng quan
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="@Url.Action("Tours", "Admin")" class="@navClass("admin","tours")">
+                                <i class="fa-solid fa-map-location-dot me-2"></i> Tours
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="@Url.Action("DiaDiems", "Admin")" class="@navClass("admin","diadiems")">
+                                <i class="fa-solid fa-mountain-city me-2"></i> Địa điểm
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="@Url.Action("KhuyenMais", "Admin")" class="@navClass("admin","khuyenmais")">
+                                <i class="fa-solid fa-gift me-2"></i> Khuyến mãi
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="@Url.Action("DatTours", "Admin")" class="@navClass("admin","dattours")">
+                                <i class="fa-solid fa-clipboard-check me-2"></i> Đặt tour
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="@Url.Action("KhachHangs", "Admin")" class="@navClass("admin","khachhangs")">
+                                <i class="fa-solid fa-users me-2"></i> Khách hàng
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="@Url.Action("TaiKhoans", "Admin")" class="@navClass("admin","taikhoans")">
+                                <i class="fa-solid fa-user-shield me-2"></i> Tài khoản
+                            </a>
+                        </li>
+                    </ul>
+                    <hr class="w-100 border-secondary" />
+                    <div class="dropdown pb-4 w-100">
+                        <button class="btn btn-outline-light w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-user-circle me-2"></i>@Session["TenDangNhap"]
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-dark w-100">
+                            <li>@Html.ActionLink("Về trang chính", "Index", "Home", null, new { @class = "dropdown-item" })</li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li>@Html.ActionLink("Đăng xuất", "Logout", "Account", null, new { @class = "dropdown-item text-danger" })</li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <main class="col py-4 px-4">
+                <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4">
+                    <div>
+                        <p class="text-uppercase text-muted mb-1 small fw-semibold">Khu vực quản trị</p>
+                        <h1 class="h3 fw-bold">@ViewBag.Title</h1>
+                    </div>
+                    @RenderSection("PageActions", required: false)
+                </div>
+
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                        <i class="fa-solid fa-circle-check me-2"></i>@TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                        <i class="fa-solid fa-triangle-exclamation me-2"></i>@TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+

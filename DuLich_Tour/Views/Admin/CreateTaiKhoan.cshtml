@@ -1,0 +1,77 @@
+@model DuLich_Tour.Models.TaiKhoan
+
+@{
+    ViewBag.Title = "Thêm tài khoản";
+}
+
+@section PageActions{
+    <a href="@Url.Action("TaiKhoans", "Admin")" class="btn btn-light text-secondary rounded-pill fw-semibold">
+        <i class="fa-solid fa-arrow-left me-2"></i>Quay lại danh sách
+    </a>
+}
+
+<div class="row justify-content-center">
+    <div class="col-xl-8 col-lg-10">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-header bg-white border-bottom py-4 px-5">
+                <h4 class="mb-0 fw-bold text-dark">Tạo tài khoản mới</h4>
+                <p class="text-muted small mb-0 mt-1">Cấp quyền truy cập hệ thống cho nhân viên hoặc khách hàng.</p>
+            </div>
+            <div class="card-body p-5">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger rounded-3 mb-4" })
+
+                    <div class="row g-4">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                @Html.LabelFor(m => m.TenDangNhap, "Tên đăng nhập", new { @class = "form-label fw-semibold" })
+                                @Html.TextBoxFor(m => m.TenDangNhap, new { @class = "form-control form-control-lg bg-light border-0", placeholder = "username" })
+                                @Html.ValidationMessageFor(m => m.TenDangNhap, "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Mật khẩu</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0"><i class="fa-solid fa-lock"></i></span>
+                                    <input type="password" name="matKhauPlain" class="form-control bg-light border-0" placeholder="Nhập mật khẩu an toàn" />
+                                </div>
+                                <div class="form-text">Mật khẩu sẽ được mã hóa an toàn.</div>
+                                @Html.ValidationMessage("matKhauPlain", "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                @Html.LabelFor(m => m.VaiTro, "Vai trò hệ thống", new { @class = "form-label fw-semibold" })
+                                @Html.DropDownListFor(m => m.VaiTro, new SelectList(new[] {
+                                    new { Value = "admin", Text = "Quản trị viên (Admin)" },
+                                    new { Value = "nhan_vien", Text = "Nhân viên (Staff)" },
+                                    new { Value = "khach_hang", Text = "Khách hàng (Customer)" }
+                                }, "Value", "Text", Model?.VaiTro), "-- Chọn vai trò --", new { @class = "form-select bg-light border-0" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-check form-switch mt-2">
+                                @Html.CheckBoxFor(m => m.TrangThai, new { @class = "form-check-input", id = "TrangThai", @checked = "checked" })
+                                <label class="form-check-label fw-semibold" for="TrangThai">Kích hoạt tài khoản ngay</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mt-4">
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-dark btn-lg rounded-pill fw-bold shadow-sm">
+                                    <i class="fa-solid fa-user-plus me-2"></i>Tạo tài khoản
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

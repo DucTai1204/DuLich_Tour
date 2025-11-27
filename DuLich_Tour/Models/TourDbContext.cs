@@ -4,6 +4,12 @@ namespace DuLich_Tour.Models
 {
     public class TourDbContext : DbContext
     {
+        static TourDbContext()
+        {
+            // Giữ nguyên database hiện có, không tự động tạo hoặc kiểm tra schema
+            Database.SetInitializer<TourDbContext>(null);
+        }
+
         public TourDbContext() : base("name=TourDbContext")
         {
             // Tối ưu cho concurrent access

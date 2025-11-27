@@ -1,0 +1,22 @@
+@model DuLich_Tour.Models.DiaDiemDuLich
+
+@{
+    ViewBag.Title = "Xóa địa điểm";
+}
+
+<h2 class="mb-3 text-danger">Xóa địa điểm</h2>
+
+<div class="alert alert-warning">
+    Bạn có chắc chắn muốn xóa địa điểm <strong>@Model.TenDiaDiem</strong>?
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.IdDiaDiem)
+
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    @Html.ActionLink("Hủy", "DiaDiems", null, new { @class = "btn btn-secondary ms-2" })
+}
+
+
