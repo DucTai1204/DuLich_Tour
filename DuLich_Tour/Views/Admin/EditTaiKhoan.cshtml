@@ -11,18 +11,18 @@
 }
 
 <div class="row justify-content-center">
-    <div class="col-xl-8 col-lg-10">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="card-header bg-white border-bottom py-4 px-5">
+    <div class="col-xl-9 col-lg-10">
+        <div class="card border-0 shadow-sm overflow-hidden">
+            <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h4 class="mb-0 fw-bold text-dark">Cập nhật tài khoản</h4>
-                        <p class="text-muted small mb-0 mt-1">Chỉnh sửa thông tin truy cập #@Model.IdTaiKhoan</p>
+                        <h4 class="mb-0 fw-bold text-dark" style="font-size: 1.5rem;">Cập nhật tài khoản</h4>
+                        <p class="text-muted mb-0 mt-2" style="font-size: 1rem;">Chỉnh sửa thông tin truy cập #@Model.IdTaiKhoan</p>
                     </div>
-                    <span class="badge bg-light text-dark border px-3 py-2">ID: @Model.IdTaiKhoan</span>
+                    <span class="badge bg-light text-dark border px-4 py-2" style="font-size: 1rem;">ID: @Model.IdTaiKhoan</span>
                 </div>
             </div>
-            <div class="card-body p-5">
+            <div class="card-body" style="padding: 2.5rem 3rem;">
                 @using (Html.BeginForm())
                 {
                     @Html.AntiForgeryToken()
@@ -31,48 +31,59 @@
 
                     <div class="row g-4">
                         <div class="col-md-12">
-                            <div class="mb-3">
+                            <div class="mb-5">
                                 @Html.LabelFor(m => m.TenDangNhap, "Tên đăng nhập", new { @class = "form-label fw-semibold" })
-                                @Html.TextBoxFor(m => m.TenDangNhap, new { @class = "form-control form-control-lg bg-light border-0" })
-                                @Html.ValidationMessageFor(m => m.TenDangNhap, "", new { @class = "text-danger small" })
-                            </div>
-                        </div>
-
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Mật khẩu mới</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-0"><i class="fa-solid fa-lock"></i></span>
-                                    <input type="password" name="matKhauPlain" class="form-control bg-light border-0" placeholder="Để trống nếu không đổi mật khẩu" />
+                                <div class="input-group input-group-lg shadow-sm">
+                                    <span class="input-group-text bg-white border-0"><i class="fa-solid fa-user text-dark"></i></span>
+                                    @Html.TextBoxFor(m => m.TenDangNhap, new { @class = "form-control border-0", placeholder = "Nhập tên đăng nhập..." })
                                 </div>
-                                <div class="form-text">Chỉ nhập nếu bạn muốn thay đổi mật khẩu hiện tại.</div>
-                                @Html.ValidationMessage("matKhauPlain", "", new { @class = "text-danger small" })
+                                @Html.ValidationMessageFor(m => m.TenDangNhap, "", new { @class = "text-danger small mt-1" })
                             </div>
                         </div>
 
                         <div class="col-md-12">
-                            <div class="mb-3">
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold"><i class="fa-solid fa-key text-warning me-2"></i>Mật khẩu mới</label>
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text bg-white border-0"><i class="fa-solid fa-lock"></i></span>
+                                    <input type="password" name="matKhauPlain" class="form-control border-0" placeholder="Để trống nếu không đổi mật khẩu" />
+                                </div>
+                                <div class="form-text"><i class="fa-solid fa-info-circle me-1"></i>Chỉ nhập nếu bạn muốn thay đổi mật khẩu hiện tại.</div>
+                                @Html.ValidationMessage("matKhauPlain", "", new { @class = "text-danger small mt-1" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="mb-4">
                                 @Html.LabelFor(m => m.VaiTro, "Vai trò hệ thống", new { @class = "form-label fw-semibold" })
-                                @Html.DropDownListFor(m => m.VaiTro, new SelectList(new[] {
-                                    new { Value = "admin", Text = "Quản trị viên (Admin)" },
-                                    new { Value = "nhan_vien", Text = "Nhân viên (Staff)" },
-                                    new { Value = "khach_hang", Text = "Khách hàng (Customer)" }
-                                }, "Value", "Text", Model?.VaiTro), new { @class = "form-select bg-light border-0" })
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text bg-white border-0"><i class="fa-solid fa-user-tag text-primary"></i></span>
+                                    @Html.DropDownListFor(m => m.VaiTro, new SelectList(new[] {
+                                        new { Value = "admin", Text = "Quản trị viên (Admin)" },
+                                        new { Value = "nhan_vien", Text = "Nhân viên (Staff)" },
+                                        new { Value = "khach_hang", Text = "Khách hàng (Customer)" }
+                                    }, "Value", "Text", Model != null ? Model.VaiTro : null), new { @class = "form-select border-0" })
+                                </div>
                             </div>
                         </div>
 
                         <div class="col-md-12">
-                            <div class="form-check form-switch mt-2">
+                            <div class="form-check form-switch p-4 bg-light rounded-3 shadow-sm">
                                 @Html.CheckBoxFor(m => m.TrangThai, new { @class = "form-check-input", id = "TrangThai" })
-                                <label class="form-check-label fw-semibold" for="TrangThai">Tài khoản đang hoạt động</label>
+                                <label class="form-check-label fw-semibold ms-3" for="TrangThai" style="font-size: 1rem;">
+                                    <i class="fa-solid fa-toggle-on text-success me-2"></i>Tài khoản đang hoạt động
+                                </label>
                             </div>
                         </div>
 
-                        <div class="col-md-12 mt-4">
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-dark btn-lg rounded-pill fw-bold shadow-sm">
+                        <div class="col-md-12 mt-5">
+                            <div class="d-grid gap-3">
+                                <button type="submit" class="btn btn-dark btn-lg fw-bold shadow-sm" style="padding: 1rem 2rem; font-size: 1.1rem;">
                                     <i class="fa-solid fa-floppy-disk me-2"></i>Lưu thay đổi
                                 </button>
+                                <a href="@Url.Action("TaiKhoans", "Admin")" class="btn btn-outline-secondary" style="padding: 0.75rem 1.5rem;">
+                                    <i class="fa-solid fa-times me-2"></i>Hủy
+                                </a>
                             </div>
                         </div>
                     </div>

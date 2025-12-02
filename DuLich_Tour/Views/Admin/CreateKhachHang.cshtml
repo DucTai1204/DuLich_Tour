@@ -11,13 +11,13 @@
 }
 
 <div class="row justify-content-center">
-    <div class="col-xl-8 col-lg-10">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="card-header bg-white border-bottom py-4 px-5">
-                <h4 class="mb-0 fw-bold text-info">Thêm khách hàng mới</h4>
-                <p class="text-muted small mb-0 mt-1">Tạo hồ sơ khách hàng để quản lý đặt tour.</p>
+    <div class="col-xl-9 col-lg-10">
+        <div class="card border-0 shadow-sm overflow-hidden">
+            <div class="card-header">
+                <h4 class="mb-0 fw-bold text-info" style="font-size: 1.5rem;">Thêm khách hàng mới</h4>
+                <p class="text-muted mb-0 mt-2" style="font-size: 1rem;">Tạo hồ sơ khách hàng để quản lý đặt tour.</p>
             </div>
-            <div class="card-body p-5">
+            <div class="card-body" style="padding: 2.5rem 3rem;">
                 @using (Html.BeginForm())
                 {
                     @Html.AntiForgeryToken()
@@ -25,64 +25,85 @@
 
                     <div class="row g-4">
                         <div class="col-md-12">
-                            <div class="mb-3">
+                            <div class="mb-5">
                                 @Html.Label("Tài khoản liên kết", new { @class = "form-label fw-semibold" })
-                                @Html.DropDownList("IdTaiKhoan", (SelectList)ViewBag.IdTaiKhoan, "-- Chọn tài khoản (nếu có) --", new { @class = "form-select bg-light border-0" })
-                                @Html.ValidationMessage("IdTaiKhoan", "", new { @class = "text-danger small" })
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text bg-white border-0"><i class="fa-solid fa-user-shield text-secondary"></i></span>
+                                    @Html.DropDownList("IdTaiKhoan", (SelectList)ViewBag.IdTaiKhoan, "-- Chọn tài khoản (nếu có) --", new { @class = "form-select border-0" })
+                                </div>
+                                @Html.ValidationMessage("IdTaiKhoan", "", new { @class = "text-danger small mt-1" })
                             </div>
                         </div>
 
                         <div class="col-md-12">
-                            <div class="mb-3">
+                            <div class="mb-5">
                                 @Html.LabelFor(m => m.HoTen, "Họ tên", new { @class = "form-label fw-semibold" })
-                                @Html.TextBoxFor(m => m.HoTen, new { @class = "form-control form-control-lg bg-light border-0", placeholder = "Nguyễn Văn A" })
-                                @Html.ValidationMessageFor(m => m.HoTen, "", new { @class = "text-danger small" })
+                                <div class="input-group input-group-lg shadow-sm">
+                                    <span class="input-group-text bg-white border-0"><i class="fa-solid fa-user text-info"></i></span>
+                                    @Html.TextBoxFor(m => m.HoTen, new { @class = "form-control border-0", placeholder = "Nguyễn Văn A" })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.HoTen, "", new { @class = "text-danger small mt-1" })
                             </div>
                         </div>
 
                         <div class="col-md-6">
-                            <div class="mb-3">
+                            <div class="mb-5">
                                 @Html.LabelFor(m => m.Email, "Email", new { @class = "form-label fw-semibold" })
-                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control bg-light border-0", type = "email", placeholder = "email@example.com" })
-                                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text bg-white border-0"><i class="fa-solid fa-envelope text-primary"></i></span>
+                                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control border-0", type = "email", placeholder = "email@example.com" })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small mt-1" })
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="mb-3">
+                            <div class="mb-5">
                                 @Html.LabelFor(m => m.SoDienThoai, "Số điện thoại", new { @class = "form-label fw-semibold" })
-                                @Html.TextBoxFor(m => m.SoDienThoai, new { @class = "form-control bg-light border-0", placeholder = "0912345678" })
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text bg-white border-0"><i class="fa-solid fa-phone text-success"></i></span>
+                                    @Html.TextBoxFor(m => m.SoDienThoai, new { @class = "form-control border-0", placeholder = "0912345678" })
+                                </div>
                             </div>
                         </div>
 
                         <div class="col-md-12">
-                            <div class="mb-3">
+                            <div class="mb-5">
                                 @Html.LabelFor(m => m.DiaChi, "Địa chỉ", new { @class = "form-label fw-semibold" })
-                                @Html.TextAreaFor(m => m.DiaChi, 3, 50, new { @class = "form-control bg-light border-0", placeholder = "Số nhà, đường, phường/xã..." })
+                                @Html.TextAreaFor(m => m.DiaChi, 3, 50, new { @class = "form-control border-0 shadow-sm", placeholder = "Số nhà, đường, phường/xã...", style = "min-height: 100px;" })
                             </div>
                         </div>
 
                         <div class="col-md-6">
-                            <div class="mb-3">
+                            <div class="mb-5">
                                 @Html.LabelFor(m => m.NgaySinh, "Ngày sinh", new { @class = "form-label fw-semibold" })
-                                @Html.TextBoxFor(m => m.NgaySinh, "{0:yyyy-MM-dd}", new { @class = "form-control bg-light border-0", type = "date" })
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text bg-white border-0"><i class="fa-solid fa-calendar text-warning"></i></span>
+                                    @Html.TextBoxFor(m => m.NgaySinh, "{0:yyyy-MM-dd}", new { @class = "form-control border-0", type = "date" })
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="mb-3">
+                            <div class="mb-5">
                                 @Html.LabelFor(m => m.GioiTinh, "Giới tính", new { @class = "form-label fw-semibold" })
-                                @Html.DropDownListFor(m => m.GioiTinh, new SelectList(new[] {
-                                    new { Value = "nam", Text = "Nam" },
-                                    new { Value = "nu", Text = "Nữ" },
-                                    new { Value = "khac", Text = "Khác" }
-                                }, "Value", "Text"), "-- Chọn giới tính --", new { @class = "form-select bg-light border-0" })
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text bg-white border-0"><i class="fa-solid fa-venus-mars text-info"></i></span>
+                                    @Html.DropDownListFor(m => m.GioiTinh, new SelectList(new[] {
+                                        new { Value = "nam", Text = "Nam" },
+                                        new { Value = "nu", Text = "Nữ" },
+                                        new { Value = "khac", Text = "Khác" }
+                                    }, "Value", "Text"), "-- Chọn giới tính --", new { @class = "form-select border-0" })
+                                </div>
                             </div>
                         </div>
 
-                        <div class="col-md-12 mt-4">
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-info text-white btn-lg rounded-pill fw-bold shadow-sm">
+                        <div class="col-md-12 mt-5">
+                            <div class="d-grid gap-3">
+                                <button type="submit" class="btn btn-info text-white btn-lg fw-bold shadow-sm" style="padding: 1rem 2rem; font-size: 1.1rem;">
                                     <i class="fa-solid fa-user-plus me-2"></i>Tạo khách hàng
                                 </button>
+                                <a href="@Url.Action("KhachHangs", "Admin")" class="btn btn-outline-secondary" style="padding: 0.75rem 1.5rem;">
+                                    <i class="fa-solid fa-times me-2"></i>Hủy
+                                </a>
                             </div>
                         </div>
                     </div>

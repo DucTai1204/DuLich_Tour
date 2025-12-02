@@ -11,13 +11,13 @@
 }
 
 <div class="row justify-content-center">
-    <div class="col-xl-8 col-lg-10">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="card-header bg-white border-bottom py-4 px-5">
-                <h4 class="mb-0 fw-bold text-danger">Tạo chương trình khuyến mãi</h4>
-                <p class="text-muted small mb-0 mt-1">Thiết lập ưu đãi để thu hút khách hàng.</p>
+    <div class="col-xl-9 col-lg-10">
+        <div class="card border-0 shadow-sm overflow-hidden">
+            <div class="card-header">
+                <h4 class="mb-0 fw-bold text-danger" style="font-size: 1.5rem;">Tạo chương trình khuyến mãi</h4>
+                <p class="text-muted mb-0 mt-2" style="font-size: 1rem;">Thiết lập ưu đãi để thu hút khách hàng.</p>
             </div>
-            <div class="card-body p-5">
+            <div class="card-body" style="padding: 2.5rem 3rem;">
                 @using (Html.BeginForm())
                 {
                     @Html.AntiForgeryToken()
@@ -25,65 +25,83 @@
 
                     <div class="row g-4">
                         <div class="col-md-12">
-                            <div class="mb-3">
+                            <div class="mb-5">
                                 @Html.LabelFor(m => m.TenChuongTrinh, "Tên chương trình", new { @class = "form-label fw-semibold" })
-                                @Html.TextBoxFor(m => m.TenChuongTrinh, new { @class = "form-control form-control-lg bg-light border-0", placeholder = "Ví dụ: Giảm giá mùa hè 2024" })
-                                @Html.ValidationMessageFor(m => m.TenChuongTrinh, "", new { @class = "text-danger small" })
-                            </div>
-                        </div>
-
-                        <div class="col-md-12">
-                            <div class="mb-4">
-                                @Html.LabelFor(m => m.MoTa, "Mô tả chi tiết", new { @class = "form-label fw-semibold" })
-                                @Html.TextAreaFor(m => m.MoTa, 4, 50, new { @class = "form-control bg-light border-0", placeholder = "Mô tả điều kiện áp dụng, đối tượng khách hàng..." })
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                @Html.LabelFor(m => m.GiaTri, "Giá trị giảm", new { @class = "form-label fw-semibold" })
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-0 fw-bold text-danger"><i class="fa-solid fa-tag"></i></span>
-                                    @Html.TextBoxFor(m => m.GiaTri, new { @class = "form-control bg-light border-0", type = "number", step = "0.01", placeholder = "Nhập số tiền hoặc %" })
+                                <div class="input-group input-group-lg shadow-sm">
+                                    <span class="input-group-text bg-white border-0"><i class="fa-solid fa-tags text-danger"></i></span>
+                                    @Html.TextBoxFor(m => m.TenChuongTrinh, new { @class = "form-control border-0", placeholder = "Ví dụ: Giảm giá mùa hè 2024" })
                                 </div>
-                                @Html.ValidationMessageFor(m => m.GiaTri, "", new { @class = "text-danger small" })
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                @Html.LabelFor(m => m.KieuGiam, "Kiểu giảm", new { @class = "form-label fw-semibold" })
-                                @Html.DropDownListFor(m => m.KieuGiam, new SelectList(new[] {
-                                    new { Value = "phan_tram", Text = "Phần trăm (%)" },
-                                    new { Value = "so_tien", Text = "Số tiền cố định (VNĐ)" }
-                                }, "Value", "Text"), new { @class = "form-select bg-light border-0" })
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                @Html.LabelFor(m => m.NgayBatDau, "Ngày bắt đầu", new { @class = "form-label fw-semibold" })
-                                @Html.TextBoxFor(m => m.NgayBatDau, "{0:yyyy-MM-dd}", new { @class = "form-control bg-light border-0", type = "date" })
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                @Html.LabelFor(m => m.NgayKetThuc, "Ngày kết thúc", new { @class = "form-label fw-semibold" })
-                                @Html.TextBoxFor(m => m.NgayKetThuc, "{0:yyyy-MM-dd}", new { @class = "form-control bg-light border-0", type = "date" })
+                                @Html.ValidationMessageFor(m => m.TenChuongTrinh, "", new { @class = "text-danger small mt-1" })
                             </div>
                         </div>
 
                         <div class="col-md-12">
-                            <div class="form-check form-switch mt-2">
-                                @Html.CheckBoxFor(m => m.TrangThai, new { @class = "form-check-input", id = "TrangThai", @checked = "checked" })
-                                <label class="form-check-label fw-semibold" for="TrangThai">Kích hoạt chương trình này ngay</label>
+                            <div class="mb-5">
+                                @Html.LabelFor(m => m.MoTa, "Mô tả chi tiết", new { @class = "form-label fw-semibold" })
+                                @Html.TextAreaFor(m => m.MoTa, 5, 50, new { @class = "form-control border-0 shadow-sm", placeholder = "Mô tả điều kiện áp dụng, đối tượng khách hàng...", style = "min-height: 120px;" })
+                                <div class="form-text mt-2"><i class="fa-solid fa-info-circle me-1"></i>Mô tả chi tiết về chương trình khuyến mãi</div>
                             </div>
                         </div>
 
-                        <div class="col-md-12 mt-4">
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-danger btn-lg rounded-pill fw-bold shadow-sm">
+                        <div class="col-md-6">
+                            <div class="mb-5">
+                                @Html.LabelFor(m => m.GiaTri, "Giá trị giảm", new { @class = "form-label fw-semibold" })
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text bg-white border-0 fw-bold text-danger"><i class="fa-solid fa-tag me-1"></i>₫</span>
+                                    @Html.TextBoxFor(m => m.GiaTri, new { @class = "form-control border-0", type = "number", step = "0.01", placeholder = "0" })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.GiaTri, "", new { @class = "text-danger small mt-1" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-5">
+                                @Html.LabelFor(m => m.KieuGiam, "Kiểu giảm", new { @class = "form-label fw-semibold" })
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text bg-white border-0"><i class="fa-solid fa-percent text-danger"></i></span>
+                                    @Html.DropDownListFor(m => m.KieuGiam, new SelectList(new[] {
+                                        new { Value = "phan_tram", Text = "Phần trăm (%)" },
+                                        new { Value = "so_tien", Text = "Số tiền cố định (VNĐ)" }
+                                    }, "Value", "Text"), new { @class = "form-select border-0" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-5">
+                                @Html.LabelFor(m => m.NgayBatDau, "Ngày bắt đầu", new { @class = "form-label fw-semibold" })
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text bg-white border-0"><i class="fa-solid fa-calendar-check text-success"></i></span>
+                                    @Html.TextBoxFor(m => m.NgayBatDau, "{0:yyyy-MM-dd}", new { @class = "form-control border-0", type = "date" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-5">
+                                @Html.LabelFor(m => m.NgayKetThuc, "Ngày kết thúc", new { @class = "form-label fw-semibold" })
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text bg-white border-0"><i class="fa-solid fa-calendar-xmark text-danger"></i></span>
+                                    @Html.TextBoxFor(m => m.NgayKetThuc, "{0:yyyy-MM-dd}", new { @class = "form-control border-0", type = "date" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-check form-switch p-4 bg-light rounded-3 shadow-sm">
+                                @Html.CheckBoxFor(m => m.TrangThai, new { @class = "form-check-input", id = "TrangThai", @checked = "checked" })
+                                <label class="form-check-label fw-semibold ms-3" for="TrangThai" style="font-size: 1rem;">
+                                    <i class="fa-solid fa-toggle-on text-success me-2"></i>Kích hoạt chương trình này ngay
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mt-5">
+                            <div class="d-grid gap-3">
+                                <button type="submit" class="btn btn-danger btn-lg fw-bold shadow-sm" style="padding: 1rem 2rem; font-size: 1.1rem;">
                                     <i class="fa-solid fa-plus me-2"></i>Tạo khuyến mãi
                                 </button>
+                                <a href="@Url.Action("KhuyenMais", "Admin")" class="btn btn-outline-secondary" style="padding: 0.75rem 1.5rem;">
+                                    <i class="fa-solid fa-times me-2"></i>Hủy
+                                </a>
                             </div>
                         </div>
                     </div>

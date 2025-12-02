@@ -10,19 +10,25 @@
     </a>
 }
 
-<div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between mb-3 gap-3">
-    <div>
-        <h2 class="h4 fw-semibold mb-1">Danh sách tour du lịch</h2>
-        <p class="text-muted mb-0">Theo dõi trạng thái bán, giá và lịch trình.</p>
-    </div>
-    <div class="input-group input-group-sm w-100 w-lg-50 shadow-sm">
-        <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass"></i></span>
-        <input type="search" class="form-control border-start-0" placeholder="Nhập tên tour để tìm nhanh (client side)" onkeyup="filterTours(this.value)" />
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-4">
+            <div>
+                <h2 class="fw-bold mb-2" style="font-size: 1.75rem; color: #1f2937;">Danh sách tour du lịch</h2>
+                <p class="text-muted mb-0" style="font-size: 1rem;">Theo dõi trạng thái bán, giá và lịch trình.</p>
+            </div>
+            <div class="input-group w-100 w-lg-50 shadow-sm" style="max-width: 400px;">
+                <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="search" class="form-control border-start-0" placeholder="Nhập tên tour để tìm nhanh..." onkeyup="filterTours(this.value)" style="padding: 0.75rem 1rem;" />
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="table-responsive shadow-sm rounded-4 border">
-    <table class="table align-middle mb-0" id="tourTable">
+<div class="card border-0 shadow-sm">
+    <div class="card-body" style="padding: 0;">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0" id="tourTable">
         <thead class="table-light text-uppercase small text-muted">
             <tr>
                 <th>Mã</th>
@@ -62,13 +68,13 @@
                     <span class="fw-semibold d-block">@item.TenTour</span>
                     <small class="text-muted">@item.MoTaNgan</small>
                 </td>
-                <td>@(item.DiaDiemDuLich?.TenDiaDiem ?? "—")</td>
+                <td>@(item.DiaDiemDuLich != null ? item.DiaDiemDuLich.TenDiaDiem : "—")</td>
                 <td>
                     <div class="d-flex flex-column">
                         <small class="text-muted">Bắt đầu</small>
-                        <span>@(item.NgayBatDau?.ToString("dd/MM/yyyy") ?? "—")</span>
+                        <span>@(item.NgayBatDau.HasValue ? item.NgayBatDau.Value.ToString("dd/MM/yyyy") : "—")</span>
                         <small class="text-muted mt-1">Kết thúc</small>
-                        <span>@(item.NgayKetThuc?.ToString("dd/MM/yyyy") ?? "—")</span>
+                        <span>@(item.NgayKetThuc.HasValue ? item.NgayKetThuc.Value.ToString("dd/MM/yyyy") : "—")</span>
                     </div>
                 </td>
                 <td class="fw-semibold text-primary">@item.GiaNguoiLon.ToString("N0") đ</td>
@@ -76,17 +82,21 @@
                     <span class="badge bg-@statusClass px-3 py-2">@statusLabel</span>
                 </td>
                 <td class="text-end">
-                    <a href="@Url.Action("EditTour", new { id = item.IdTour })" class="btn btn-outline-secondary btn-sm rounded-pill me-2">
-                        <i class="fa-solid fa-pen-to-square me-1"></i>Sửa
-                    </a>
-                    <a href="@Url.Action("DeleteTour", new { id = item.IdTour })" class="btn btn-outline-danger btn-sm rounded-pill">
-                        <i class="fa-solid fa-trash me-1"></i>Xóa
-                    </a>
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a href="@Url.Action("EditTour", new { id = item.IdTour })" class="btn btn-outline-secondary" style="padding: 0.5rem 1rem;">
+                            <i class="fa-solid fa-pen-to-square me-1"></i>Sửa
+                        </a>
+                        <a href="@Url.Action("DeleteTour", new { id = item.IdTour })" class="btn btn-outline-danger" style="padding: 0.5rem 1rem;">
+                            <i class="fa-solid fa-trash me-1"></i>Xóa
+                        </a>
+                    </div>
                 </td>
             </tr>
         }
         </tbody>
     </table>
+        </div>
+    </div>
 </div>
 
 @section scripts{

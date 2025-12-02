@@ -11,13 +11,13 @@
 }
 
 <div class="row justify-content-center">
-    <div class="col-xl-8 col-lg-10">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="card-header bg-white border-bottom py-4 px-5">
-                <h4 class="mb-0 fw-bold text-success">Thêm địa điểm du lịch</h4>
-                <p class="text-muted small mb-0 mt-1">Mở rộng danh sách điểm đến hấp dẫn.</p>
+    <div class="col-xl-9 col-lg-10">
+        <div class="card border-0 shadow-sm overflow-hidden">
+            <div class="card-header">
+                <h4 class="mb-0 fw-bold text-success" style="font-size: 1.5rem;">Thêm địa điểm du lịch</h4>
+                <p class="text-muted mb-0 mt-2" style="font-size: 1rem;">Mở rộng danh sách điểm đến hấp dẫn.</p>
             </div>
-            <div class="card-body p-5">
+            <div class="card-body" style="padding: 2.5rem 3rem;">
                 @using (Html.BeginForm())
                 {
                     @Html.AntiForgeryToken()
@@ -25,49 +25,62 @@
 
                     <div class="row g-4">
                         <div class="col-md-12">
-                            <div class="mb-3">
+                            <div class="mb-5">
                                 @Html.LabelFor(m => m.TenDiaDiem, "Tên địa điểm", new { @class = "form-label fw-semibold" })
-                                @Html.TextBoxFor(m => m.TenDiaDiem, new { @class = "form-control form-control-lg bg-light border-0", placeholder = "Ví dụ: Vịnh Hạ Long" })
-                                @Html.ValidationMessageFor(m => m.TenDiaDiem, "", new { @class = "text-danger small" })
+                                <div class="input-group input-group-lg shadow-sm">
+                                    <span class="input-group-text bg-white border-0"><i class="fa-solid fa-mountain-city text-success"></i></span>
+                                    @Html.TextBoxFor(m => m.TenDiaDiem, new { @class = "form-control border-0", placeholder = "Ví dụ: Vịnh Hạ Long" })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.TenDiaDiem, "", new { @class = "text-danger small mt-1" })
                             </div>
                         </div>
 
                         <div class="col-md-12">
-                            <div class="mb-3">
+                            <div class="mb-5">
                                 @Html.LabelFor(m => m.ViTri, "Vị trí / Tỉnh thành", new { @class = "form-label fw-semibold" })
-                                @Html.TextBoxFor(m => m.ViTri, new { @class = "form-control bg-light border-0", placeholder = "Ví dụ: Quảng Ninh" })
-                            </div>
-                        </div>
-
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                @Html.LabelFor(m => m.HinhAnh, "URL Hình ảnh", new { @class = "form-label fw-semibold" })
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-0"><i class="fa-regular fa-image"></i></span>
-                                    @Html.TextBoxFor(m => m.HinhAnh, new { @class = "form-control bg-light border-0", placeholder = "https://example.com/image.jpg" })
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text bg-white border-0"><i class="fa-solid fa-location-dot text-primary"></i></span>
+                                    @Html.TextBoxFor(m => m.ViTri, new { @class = "form-control border-0", placeholder = "Ví dụ: Quảng Ninh" })
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-md-12">
-                            <div class="mb-4">
-                                @Html.LabelFor(m => m.MoTa, "Mô tả", new { @class = "form-label fw-semibold" })
-                                @Html.TextAreaFor(m => m.MoTa, 4, 50, new { @class = "form-control bg-light border-0", placeholder = "Giới thiệu ngắn gọn về địa điểm này..." })
+                            <div class="mb-5">
+                                @Html.LabelFor(m => m.HinhAnh, "URL Hình ảnh", new { @class = "form-label fw-semibold" })
+                                <div class="input-group shadow-sm">
+                                    <span class="input-group-text bg-white border-0"><i class="fa-regular fa-image text-info"></i></span>
+                                    @Html.TextBoxFor(m => m.HinhAnh, new { @class = "form-control border-0", placeholder = "https://example.com/image.jpg" })
+                                </div>
+                                <div class="form-text mt-2"><i class="fa-solid fa-link me-1"></i>Đường dẫn đầy đủ đến hình ảnh</div>
                             </div>
                         </div>
 
                         <div class="col-md-12">
-                            <div class="form-check form-switch">
-                                @Html.CheckBoxFor(m => m.TrangThai, new { @class = "form-check-input", id = "TrangThai", @checked = "checked" })
-                                <label class="form-check-label fw-semibold" for="TrangThai">Kích hoạt địa điểm này ngay</label>
+                            <div class="mb-5">
+                                @Html.LabelFor(m => m.MoTa, "Mô tả", new { @class = "form-label fw-semibold" })
+                                @Html.TextAreaFor(m => m.MoTa, 5, 50, new { @class = "form-control border-0 shadow-sm", placeholder = "Giới thiệu ngắn gọn về địa điểm này...", style = "min-height: 120px;" })
+                                <div class="form-text mt-2"><i class="fa-solid fa-info-circle me-1"></i>Mô tả về địa điểm du lịch</div>
                             </div>
                         </div>
 
-                        <div class="col-md-12 mt-4">
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-success btn-lg rounded-pill fw-bold shadow-sm">
+                        <div class="col-md-12">
+                            <div class="form-check form-switch p-4 bg-light rounded-3 shadow-sm">
+                                @Html.CheckBoxFor(m => m.TrangThai, new { @class = "form-check-input", id = "TrangThai", @checked = "checked" })
+                                <label class="form-check-label fw-semibold ms-3" for="TrangThai" style="font-size: 1rem;">
+                                    <i class="fa-solid fa-toggle-on text-success me-2"></i>Kích hoạt địa điểm này ngay
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mt-5">
+                            <div class="d-grid gap-3">
+                                <button type="submit" class="btn btn-success btn-lg fw-bold shadow-sm" style="padding: 1rem 2rem; font-size: 1.1rem;">
                                     <i class="fa-solid fa-plus me-2"></i>Thêm địa điểm
                                 </button>
+                                <a href="@Url.Action("DiaDiems", "Admin")" class="btn btn-outline-secondary" style="padding: 0.75rem 1.5rem;">
+                                    <i class="fa-solid fa-times me-2"></i>Hủy
+                                </a>
                             </div>
                         </div>
                     </div>

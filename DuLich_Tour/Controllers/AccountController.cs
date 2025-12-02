@@ -260,6 +260,11 @@ namespace DuLich_Tour.Controllers
                         user.LanDangNhapCuoi = DateTime.Now;
                         db.SaveChanges();
 
+                        // 5. Redirect dựa trên role
+                        if (user.VaiTro == "admin")
+                        {
+                            return Redirect("/Admin/Index");
+                        }
                         return RedirectToAction("Index", "Tour"); // chuyển đến trang tour
                     }
                 } // db.Dispose() được gọi tự động ở đây

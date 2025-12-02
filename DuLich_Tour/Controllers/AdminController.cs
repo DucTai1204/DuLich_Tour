@@ -1,4 +1,4 @@
-using DuLich_Tour.Models;
+﻿using DuLich_Tour.Models;
 using System;
 using System.Data.Entity;
 using System.Linq;
@@ -149,13 +149,13 @@ namespace DuLich_Tour.Controllers
             var totalTours = _context.TourDuLiches.Count();
             var totalCustomers = _context.KhachHangs.Count();
             var totalBookings = _context.DatTours.Count();
-            
+
             // Tính doanh thu: chỉ tính các đơn đã xác nhận hoặc hoàn thành (nếu có)
             // Ở đây tạm tính các đơn "da-xac-nhan"
             var paidBookings = _context.DatTours
                 .Where(d => d.TrangThai == "da-xac-nhan")
                 .ToList();
-            
+
             decimal totalRevenue = paidBookings.Sum(d => d.TongTien);
 
             // 2. Đơn đặt tour gần đây (lấy 5 đơn mới nhất)
@@ -178,13 +178,13 @@ namespace DuLich_Tour.Controllers
                 var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
 
                 var monthlyRevenue = _context.DatTours
-                    .Where(d => d.TrangThai == "da-xac-nhan" && 
-                                d.NgayDat >= startOfMonth && 
+                    .Where(d => d.TrangThai == "da-xac-nhan" &&
+                                d.NgayDat >= startOfMonth &&
                                 d.NgayDat <= endOfMonth)
                     .ToList() // Client evaluation might be needed if EF version is old, but usually Sum works. 
                               // Safe to ToList first for small datasets or ensure LINQ compatibility.
                     .Sum(d => d.TongTien);
-                
+
                 labels.Add(month.ToString("MM/yyyy"));
                 revenueData.Add(monthlyRevenue);
             }
@@ -793,7 +793,7 @@ namespace DuLich_Tour.Controllers
             return RedirectToAction("TaiKhoans");
         }
 
-#endregion
+        #endregion
 
         #region DatTour
 

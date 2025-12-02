@@ -1,0 +1,333 @@
+﻿@model DuLich_Tour.Models.ViewModels.PaymentViewModel
+@using System.Web.Helpers
+@{
+    ViewBag.Title = "Thanh Toán";
+    var datTour = ViewBag.DatTour as DuLich_Tour.Models.DatTour;
+    var stripePublishableKey = ViewBag.StripePublishableKey != null ? ViewBag.StripePublishableKey.ToString() : "";
+}
+
+@section Styles {
+    <style>
+        /* Stripe Elements styling */
+        #card-element {
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+            background-color: #fff;
+            min-height: 40px;
+        }
+
+        .StripeElement {
+            height: 40px;
+            padding: 10px 12px;
+            color: #32325d;
+            background-color: white;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px 0 #e6ebf1;
+            transition: box-shadow 150ms ease;
+        }
+
+        .StripeElement--focus {
+            box-shadow: 0 1px 3px 0 #cfd7df;
+        }
+
+        .StripeElement--invalid {
+            border-color: #fa755a;
+        }
+
+        .StripeElement--webkit-autofill {
+            background-color: #fefde5 !important;
+        }
+    </style>
+}
+
+<div class="container py-5">
+    <h2 class="mb-4"><i class="fas fa-credit-card me-2"></i>Thanh Toán</h2>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (datTour == null)
+    {
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>Không tìm thấy thông tin đặt tour.
+        </div>
+        <a href="@Url.Action("MyBookings", "Booking")" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Quay lại
+        </a>
+    }
+    else
+    {
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Thông tin đặt tour</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Mã đặt tour:</strong> #@datTour.IdDatTour
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Ngày đặt:</strong> @datTour.NgayDat.ToString("dd/MM/yyyy HH:mm")
+                            </div>
+                        </div>
+                        @if (datTour.TourDuLich != null)
+                        {
+                            <div class="mb-3">
+                                <strong>Tour:</strong> @datTour.TourDuLich.TenTour
+                            </div>
+                        }
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Số người lớn:</strong> @datTour.SoNguoiLon
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Số trẻ em:</strong> @datTour.SoTreEm
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Tổng tiền:</strong>
+                            <span class="text-success fs-4">@string.Format("{0:N0}₫", datTour.TongTien)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Thanh toán bằng Stripe</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="payment-form">
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(m => m.BookingId)
+                            @Html.HiddenFor(m => m.SoTien)
+
+                            <div class="mb-3">
+                                <label class="form-label">Tên chủ thẻ</label>
+                                <input type="text" id="cardholder-name" class="form-control" placeholder="NGUYEN VAN A" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Thông tin thẻ</label>
+                                <div id="card-element" style="min-height: 40px;">
+                                    <!-- Stripe Elements sẽ tạo form nhập thẻ ở đây -->
+                                </div>
+                                <div id="card-errors" role="alert" class="text-danger mt-2"></div>
+                            </div>
+
+                            <button type="submit" id="submit-button" class="btn btn-primary w-100">
+                                <span id="button-text">
+                                    <i class="fas fa-lock me-2"></i>Thanh toán @string.Format("{0:N0}₫", Model.SoTien)
+                                </span>
+                                <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Hướng dẫn</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Thẻ test Stripe:</strong></p>
+                        <ul>
+                            <li><strong>Số thẻ:</strong> 4242 4242 4242 4242</li>
+                            <li><strong>Ngày hết hạn:</strong> Bất kỳ ngày tương lai (ví dụ: 12/25)</li>
+                            <li><strong>CVC:</strong> Bất kỳ 3 chữ số (ví dụ: 123)</li>
+                            <li><strong>ZIP:</strong> Bất kỳ 5 chữ số (ví dụ: 12345)</li>
+                        </ul>
+                        <div class="alert alert-warning mt-3">
+                            <small><i class="fas fa-info-circle me-1"></i>Đang sử dụng chế độ test (sandbox). Thanh toán sẽ không thực sự trừ tiền.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <!-- Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <script>
+        // Safe server-rendered values
+        var serverBookingId = @Html.Raw(Json.Encode(Model.BookingId));
+        var serverAmount = @Html.Raw(Json.Encode(Model.SoTien));
+        var serverCreatePaymentIntentUrl = '@Url.Action("CreatePaymentIntent", "Payment")';
+        var serverConfirmPaymentUrl = '@Url.Action("ConfirmPayment", "Payment")';
+        var serverBookingDetailsUrl = '@Url.Action("Details", "Booking", new { id = Model.BookingId })';
+        var stripePublishableKey = @Html.Raw(Json.Encode(stripePublishableKey));
+
+        // Khởi tạo Stripe khi có key hợp lệ
+        var stripe = null;
+        var cardElement = null;
+
+        function initStripe() {
+            try {
+                if (!stripePublishableKey || stripePublishableKey.indexOf("YOUR_PUBLISHABLE_KEY") !== -1) {
+                    console.error('Stripe Publishable Key chua duoc cau hinh hoac khong hop le');
+                    return;
+                }
+
+                console.log('Initializing Stripe with key:', stripePublishableKey.substring(0, 20) + '...');
+                stripe = Stripe(stripePublishableKey);
+                var elements = stripe.elements();
+
+                cardElement = elements.create('card', {
+                    style: {
+                        base: {
+                            fontSize: '16px',
+                            color: '#32325d',
+                            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                            '::placeholder': {
+                                color: '#aab7c4'
+                            }
+                        },
+                        invalid: {
+                            color: '#fa755a',
+                            iconColor: '#fa755a'
+                        }
+                    }
+                });
+
+                // Mount card element when DOM ready
+                var cardElementDiv = document.getElementById('card-element');
+                if (cardElementDiv) {
+                    cardElement.mount('#card-element');
+                    console.log('Stripe card element mounted successfully');
+                }
+
+                // Real-time errors
+                cardElement.on('change', function (event) {
+                    var displayError = document.getElementById('card-errors');
+                    displayError.textContent = event.error ? event.error.message : '';
+                });
+            } catch (e) {
+                console.error('Error initializing Stripe:', e);
+                alert('Lỗi khởi tạo Stripe: ' + (e.message || e));
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initStripe);
+        } else {
+            initStripe();
+        }
+
+        // Xử lý submit form Stripe
+        (function () {
+            var form = document.getElementById('payment-form');
+            if (!form) return;
+
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                var submitButton = document.getElementById('submit-button');
+                var buttonText = document.getElementById('button-text');
+                var spinner = document.getElementById('spinner');
+                var cardholderName = document.getElementById('cardholder-name').value;
+                var bookingId = serverBookingId;
+                var amount = serverAmount;
+
+                if (!stripe || !cardElement) {
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = 'Stripe chưa được khởi tạo. Vui lòng kiểm tra cấu hình.';
+                    return;
+                }
+
+                try {
+                    submitButton.disabled = true;
+                    buttonText.classList.add('d-none');
+                    spinner.classList.remove('d-none');
+
+                    // Bước 1: Tạo Payment Intent từ server
+                    var response = await fetch(serverCreatePaymentIntentUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        body: JSON.stringify({
+                            bookingId: bookingId,
+                            amount: amount
+                        })
+                    });
+
+                    var data = await response.json();
+
+                    if (!data.success || !data.clientSecret) {
+                        throw new Error(data.message || 'Không thể tạo payment intent');
+                    }
+
+                    // Bước 2: Xác nhận thanh toán với Stripe
+                    var result = await stripe.confirmCardPayment(data.clientSecret, {
+                        payment_method: {
+                            card: cardElement,
+                            billing_details: {
+                                name: cardholderName
+                            }
+                        }
+                    });
+
+                    if (result.error) {
+                        var errorElement = document.getElementById('card-errors');
+                        errorElement.textContent = result.error.message;
+                        throw result.error;
+                    }
+
+                    // Thanh toán thành công, xác nhận với server
+                    var confirmResponse = await fetch(serverConfirmPaymentUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        body: JSON.stringify({
+                            bookingId: bookingId,
+                            paymentIntentId: result.paymentIntent.id,
+                            paymentMethodId: result.paymentIntent.payment_method
+                        })
+                    });
+
+                    var confirmData = await confirmResponse.json();
+
+                    if (confirmData.success) {
+                        window.location.href = confirmData.redirectUrl || serverBookingDetailsUrl;
+                    } else {
+                        throw new Error(confirmData.message || 'Xác nhận thanh toán thất bại');
+                    }
+                } catch (error) {
+                    console.error('Payment error:', error);
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = (error && error.message) ? error.message : 'Đã xảy ra lỗi khi xử lý thanh toán';
+                    submitButton.disabled = false;
+                    buttonText.classList.remove('d-none');
+                    spinner.classList.add('d-none');
+                }
+            });
+        })();
+    </script>
+}

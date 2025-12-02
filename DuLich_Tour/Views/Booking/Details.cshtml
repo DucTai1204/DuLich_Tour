@@ -165,7 +165,7 @@
 
                     @if (Model.DatTour.TrangThai != "da-thanh-toan" && Model.DatTour.TrangThai != "da-huy")
                     {
-                        <a href="@Url.Action("Pay", "Payment", new { bookingId = Model.DatTour.IdDatTour })" class="btn btn-primary w-100">
+                        <a href="@Url.Action("Index", "Payment", new { bookingId = Model.DatTour.IdDatTour })" class="btn btn-primary w-100">
                             <i class="fas fa-credit-card me-2"></i>Thanh toán
                         </a>
                     }

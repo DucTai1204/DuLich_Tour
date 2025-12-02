@@ -1,7 +1,7 @@
 @model DuLich_Tour.Models.DatTour
 
 @{
-    ViewBag.Title = $"Đơn #{Model.IdDatTour}";
+    ViewBag.Title = "Đơn #" + Model.IdDatTour;
 }
 
 @section PageActions{
@@ -20,8 +20,8 @@
                     var customerEmail = Model.KhachHang != null ? Model.KhachHang.Email : "-";
                     var customerPhone = Model.KhachHang != null ? Model.KhachHang.SoDienThoai : "-";
                     var tourName = Model.TourDuLich != null ? Model.TourDuLich.TenTour : "-";
-                    var locationName = Model.TourDuLich?.DiaDiemDuLich != null ? Model.TourDuLich.DiaDiemDuLich.TenDiaDiem : "-";
-                    var startDate = Model.TourDuLich?.NgayBatDau.HasValue == true ? Model.TourDuLich.NgayBatDau.Value.ToString("dd/MM/yyyy") : "-";
+                    var locationName = (Model.TourDuLich != null && Model.TourDuLich.DiaDiemDuLich != null) ? Model.TourDuLich.DiaDiemDuLich.TenDiaDiem : "-";
+                    var startDate = (Model.TourDuLich != null && Model.TourDuLich.NgayBatDau.HasValue) ? Model.TourDuLich.NgayBatDau.Value.ToString("dd/MM/yyyy") : "-";
                 }
 
                 <div class="row g-4">

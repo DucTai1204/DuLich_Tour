@@ -13,7 +13,7 @@
 
     <style>
         body {
-            background-color: #f4f6f9;
+            background-color: #f8f9fa;
         }
 
         .admin-sidebar {
@@ -24,6 +24,9 @@
 
         .admin-sidebar .nav-link {
             color: #cbd5f5;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.25rem;
+            border-radius: 0.5rem;
         }
 
         .admin-sidebar .nav-link.active,
@@ -32,45 +35,215 @@
             color: #fff;
         }
 
-        .admin-navbar {
-            background-color: #fff;
-            border-bottom: 1px solid #e5e7eb;
+        /* Main content area - more spacing */
+        main {
+            padding: 2rem 2.5rem !important;
         }
 
-        .admin-card {
-            border-radius: 1rem;
+        /* Cards - larger padding, no gradient */
+        .card {
+            border-radius: 0.75rem;
             border: 1px solid #e5e7eb;
+            background-color: #ffffff;
+            transition: box-shadow 0.3s ease;
         }
 
-        .admin-form-control:focus {
+        .card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            padding: 1.75rem 2rem;
+        }
+
+        .card-header {
+            padding: 1.5rem 2rem;
+            background-color: #ffffff;
+            border-bottom: 2px solid #f3f4f6;
+        }
+
+        /* Form controls - larger */
+        .form-control, .form-select {
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #0d6efd;
             box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+            outline: none;
         }
 
-        table.table tr th,
-        table.table tr td {
+        .form-control-lg {
+            padding: 1rem 1.25rem;
+            font-size: 1.1rem;
+        }
+
+        /* Labels - more spacing */
+        .form-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+            color: #374151;
+        }
+
+        /* Buttons - larger */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Input groups - better spacing */
+        .input-group {
+            margin-bottom: 0.5rem;
+        }
+
+        .input-group-text {
+            padding: 0.75rem 1rem;
+            background-color: #f9fafb;
+            border: 1px solid #d1d5db;
+            border-right: none;
+        }
+
+        .input-group .form-control {
+            border-left: none;
+        }
+
+        .input-group:focus-within .input-group-text {
+            background-color: #f3f4f6;
+            border-color: #0d6efd;
+        }
+
+        /* Tables - more spacing */
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            padding: 1rem 1.25rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            background-color: #f9fafb;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .table tbody td {
+            padding: 1.25rem 1.25rem;
             vertical-align: middle;
         }
 
-        .form-card {
-            border-radius: 1.25rem;
+        .table tbody tr {
+            border-bottom: 1px solid #f3f4f6;
         }
 
-        .form-section-title {
-            font-size: 0.95rem;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            color: #6b7280;
-            font-weight: 600;
-            margin-bottom: 0.4rem;
+        .table tbody tr:hover {
+            background-color: #f9fafb;
         }
 
-        .input-helper {
-            font-size: 0.8rem;
-            color: #6b7280;
+        /* Icon boxes */
+        .icon-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 0.5rem;
         }
 
-        .form-label {
-            font-weight: 600;
+        /* Section spacing */
+        .mb-section {
+            margin-bottom: 2rem;
+        }
+
+        /* Card spacing in rows */
+        .row.g-4 > * {
+            padding: 0.75rem;
+        }
+
+        .row.g-5 > * {
+            padding: 1rem;
+        }
+
+        /* Badge improvements */
+        .badge {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Alert improvements */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+        }
+
+        /* Remove all gradients */
+        .bg-gradient {
+            background: none !important;
+        }
+
+        /* Better spacing for form sections */
+        .form-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Textarea improvements */
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Switch improvements */
+        .form-check {
+            padding: 1rem;
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+        }
+
+        .form-check-input {
+            width: 2.5rem;
+            height: 1.25rem;
+        }
+
+        /* Page header improvements */
+        h1, h2, h3, h4, h5, h6 {
+            margin-bottom: 1rem;
+        }
+
+        /* Container improvements */
+        .container-fluid {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
         }
     </style>
 </head>
